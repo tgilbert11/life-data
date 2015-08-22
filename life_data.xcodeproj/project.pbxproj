@@ -13,6 +13,12 @@
 		B52780CE1B7FC52500DDCB2E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B52780CD1B7FC52500DDCB2E /* Images.xcassets */; };
 		B52780D11B7FC52500DDCB2E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B52780CF1B7FC52500DDCB2E /* LaunchScreen.xib */; };
 		B52780DD1B7FC52600DDCB2E /* life_dataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52780DC1B7FC52600DDCB2E /* life_dataTests.swift */; };
+		B52780E71B7FC54A00DDCB2E /* mysqlDynamic API.txt in Resources */ = {isa = PBXBuildFile; fileRef = B52780E61B7FC54A00DDCB2E /* mysqlDynamic API.txt */; };
+		B550332F1B7FFD1600F1365C /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550332E1B7FFD1600F1365C /* SelectionViewController.swift */; };
+		B55033311B8004A100F1365C /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033301B8004A100F1365C /* Request.swift */; };
+		B55033331B80267000F1365C /* NumericViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033321B80267000F1365C /* NumericViewController.swift */; };
+		B55033351B80270A00F1365C /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033341B80270A00F1365C /* TextViewController.swift */; };
+		B55033371B8035A200F1365C /* ModifierViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033361B8035A200F1365C /* ModifierViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +42,12 @@
 		B52780D61B7FC52500DDCB2E /* life_dataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = life_dataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B52780DB1B7FC52500DDCB2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B52780DC1B7FC52600DDCB2E /* life_dataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = life_dataTests.swift; sourceTree = "<group>"; };
+		B52780E61B7FC54A00DDCB2E /* mysqlDynamic API.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "mysqlDynamic API.txt"; sourceTree = "<group>"; };
+		B550332E1B7FFD1600F1365C /* SelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionViewController.swift; sourceTree = "<group>"; };
+		B55033301B8004A100F1365C /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		B55033321B80267000F1365C /* NumericViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumericViewController.swift; sourceTree = "<group>"; };
+		B55033341B80270A00F1365C /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextViewController.swift; path = ../TextViewController.swift; sourceTree = "<group>"; };
+		B55033361B8035A200F1365C /* ModifierViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifierViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,12 +89,18 @@
 		B52780C31B7FC52500DDCB2E /* life_data */ = {
 			isa = PBXGroup;
 			children = (
+				B52780E61B7FC54A00DDCB2E /* mysqlDynamic API.txt */,
 				B52780C61B7FC52500DDCB2E /* AppDelegate.swift */,
 				B52780C81B7FC52500DDCB2E /* ViewController.swift */,
 				B52780CA1B7FC52500DDCB2E /* Main.storyboard */,
 				B52780CD1B7FC52500DDCB2E /* Images.xcassets */,
 				B52780CF1B7FC52500DDCB2E /* LaunchScreen.xib */,
 				B52780C41B7FC52500DDCB2E /* Supporting Files */,
+				B550332E1B7FFD1600F1365C /* SelectionViewController.swift */,
+				B55033321B80267000F1365C /* NumericViewController.swift */,
+				B55033341B80270A00F1365C /* TextViewController.swift */,
+				B55033301B8004A100F1365C /* Request.swift */,
+				B55033361B8035A200F1365C /* ModifierViewController.swift */,
 			);
 			path = life_data;
 			sourceTree = "<group>";
@@ -161,6 +179,7 @@
 				TargetAttributes = {
 					B52780C01B7FC52500DDCB2E = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = XL9PR4L78Q;
 					};
 					B52780D51B7FC52500DDCB2E = {
 						CreatedOnToolsVersion = 6.4;
@@ -195,6 +214,7 @@
 				B52780CC1B7FC52500DDCB2E /* Main.storyboard in Resources */,
 				B52780D11B7FC52500DDCB2E /* LaunchScreen.xib in Resources */,
 				B52780CE1B7FC52500DDCB2E /* Images.xcassets in Resources */,
+				B52780E71B7FC54A00DDCB2E /* mysqlDynamic API.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,7 +233,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B52780C91B7FC52500DDCB2E /* ViewController.swift in Sources */,
+				B55033311B8004A100F1365C /* Request.swift in Sources */,
+				B55033331B80267000F1365C /* NumericViewController.swift in Sources */,
+				B550332F1B7FFD1600F1365C /* SelectionViewController.swift in Sources */,
 				B52780C71B7FC52500DDCB2E /* AppDelegate.swift in Sources */,
+				B55033351B80270A00F1365C /* TextViewController.swift in Sources */,
+				B55033371B8035A200F1365C /* ModifierViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,9 +367,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = life_data/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -352,9 +381,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = life_data/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -411,6 +444,7 @@
 				B52780E21B7FC52600DDCB2E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B52780E31B7FC52600DDCB2E /* Build configuration list for PBXNativeTarget "life_dataTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +453,7 @@
 				B52780E51B7FC52600DDCB2E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

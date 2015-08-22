@@ -1,0 +1,77 @@
+>>>	1, drivingTime, driving time
+>>		s1, tripType, trip type
+>			1, leftForWork, left for work
+>			2, arrivedAtWork, arrived at work
+>			3, leftForHome, left for home
+>			4, arrivedAtHome, arrived at home
+>>		s2, route, route
+>			1, notSureYet, not sure yet
+>			2, h17h85, 17-85
+>			3, h17h9, 17-9
+>			4, h17h280, 17-280
+>			5, OSCHh85, Old Santa Cruz Hwy-85
+>			6, OSCHh9, Old Santa Cruz Hwy-9
+>			7, OSCHh280, Old Santa Cruz Hwy-280
+>>>	2, meals, meals
+>>		s1, mealType, meal type
+>			1, breakfast, breakfast
+>			2, brunch, brunch
+>			3, lunch, lunch
+>			4, snack, snack
+>			5, dinner, dinner
+>>		s2, heaviness, heaviness
+>			1, light, light
+>			2, moderate, moderate
+>			3, heavy, heavy
+>>>	3, drinks, drinks
+>>		s1, drinkType, drink type
+>			1, alcohol, alcohol
+>			2, coffee, coffee
+>			3, water, water
+>			4, otherDrink, other drink
+>>>	4, emotions, emotions
+>>		s1, emotion, emotion
+>			1, happy, happy
+>			2, upset, upset
+>			3, energized, energized
+>			4, tired, tired
+>			5, stressed, stressed
+>>		n1, intensity, intensity (1-10)
+>>>	5, maintenance, maintenance
+>>		s1, item, item
+>			1, morgansCar, Morgan's Car
+>			2, taylorsCar, Taylor's Car
+>			3, house, house
+>			4, morgan, Morgan
+>			5, taylor, Taylor
+>>		t1, maintenancePerformed, maintenance performed
+>>		t2, notes, notes
+>>>	6, exercise, exercise
+>>		s1, type, type
+>			1, cardio, cardio
+>			2, strength, strength
+>>		n1, intensity, intensity (1-10)
+>>		n2, duration, duration (in minutes)
+>>>	7, weight, weight
+>>		s1, timeOfDay, time of day
+>			1, morning, morning
+>			2, midday, mid-day
+>			3, night, night
+>>		n1, weight, weight (in lbs)
+>>>	8, sleep, sleep
+>>		s1, event, event
+>			1, wokeUp, woke up
+>			2, wentToBed, went to bed
+>			3, tookANap, took a nap
+>			4, wokeUpFromNap, woke up from nap
+>			5, alarmWentOff, alarm went off
+>>		s2, feeling, feeling
+>			1, great, great
+>			2, average, average
+>			3, tired, tired
+>			4, exhausted, exhausted
+>>>	9, socialContact, social contact
+>>		t1, name, name (firstLast)
+>>>	10, randomInformation, random information
+>>		t1, title, title
+>>		t2, notes, notes
