@@ -8,9 +8,17 @@
 
 import UIKit
 
-class ViewController: UITableViewController {
+class ViewController: UIViewController {
 
     @IBOutlet var theTableView: UITableView?
+    @IBOutlet var timeSlider: UISlider?
+    @IBOutlet var timeLabel: UILabel?
+    
+    let username = "taylorg"
+    
+    var dateToBeUsed: NSDate?
+    var dates: [(proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float)] = []
+    
     // String (categoryName) -> String (dataTypeName) -> String (dataItemName) -> String (data item name)
     var categoryDictionary = [String: Dictionary<String, Dictionary<String, String>>]()
     
@@ -46,7 +54,7 @@ class ViewController: UITableViewController {
             hostname = "taylorg.no-ip.org"
         }
         
-        println(APIString)
+        //println(APIString)
         
         //let path = "/Users/taylorg/Desktop/life_data/life_data/mysqlDynamic API.txt"
         //let rawText = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: nil)!
@@ -118,12 +126,21 @@ class ViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshLayout", name: UIApplicationDidBecomeActiveNotification, object: nil)
         // Do any additional setup after loading the view, typically from a nib.
     }
     
+    
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        refreshLayout()
+    }
+    
+    func refreshLayout() {
         getData()
+        timeSlider!.setValue(1, animated: true)
+        updateTimeLabelWithDate(nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -131,30 +148,37 @@ class ViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell") as! UITableViewCell
         cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]!["descriptor"]!["descriptor"]!
         //cell.detailTextLabel = UILabel()
         return cell
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categoryDictionary.count
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         //println(categoryByIndex[indexPath.row]![-1]![-1]!)
+        theTableView!.deselectRowAtIndexPath(indexPath, animated: true)
         
-        let usernameString = "morganm"
-        let currentDate = NSDate()
+        let usernameString = username
+        var currentDate: NSDate?
+        if dateToBeUsed == nil {
+            currentDate = NSDate()
+        }
+        else {
+            currentDate = dateToBeUsed!
+        }
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
-        let timeString = dateFormatter.stringFromDate(currentDate)
+        let timeString = dateFormatter.stringFromDate(currentDate!)
         //println(timeString)
         let categoryString = categoryByIndex[indexPath.row]![-1]![-1]!
         let firstDataTypeName = categoryByIndex[indexPath.row]![0]![-1]!
@@ -170,9 +194,9 @@ class ViewController: UITableViewController {
                 request!.dataTypeNames.append(dataType)
             }
         }
-        println(request!.textBits[0])
+        //println(request!.textBits[0])
         var type = categoryDictionary[categoryString]![firstDataTypeName]!["dataType"]!
-        println(type)
+        //println(type)
         if type == "s" {
             self.performSegueWithIdentifier("showSelectionViewController", sender: self)
         }
@@ -190,12 +214,76 @@ class ViewController: UITableViewController {
             selectionViewController.request = self.request
         }
         if segue.identifier! == "showNumericViewController" {
-            let selectionViewController = segue.destinationViewController as! NumericViewController
-            selectionViewController.request = self.request
+            let numericViewController = segue.destinationViewController as! NumericViewController
+            numericViewController.request = self.request
         }
         if segue.identifier! == "showTextViewController" {
-            let selectionViewController = segue.destinationViewController as! TextViewController
-            selectionViewController.request = self.request
+            let textViewController = segue.destinationViewController as! TextViewController
+            textViewController.request = self.request
+        }
+        if segue.identifier! == "showReadDataViewController" {
+            let readDataViewController = segue.destinationViewController as! ReadDataViewController
+            readDataViewController.username = username
+            readDataViewController.hostname = hostname
+        }
+    }
+    
+    @IBAction func didSlideSlider() {
+    
+        let now = NSDate()
+        var updatedDate: NSDate?
+        if timeSlider!.value != 1 {
+            let numberOfSecondsOff = NSTimeInterval(60*60*24*(1-timeSlider!.value)*(1-timeSlider!.value))
+            updatedDate = now.dateByAddingTimeInterval(-numberOfSecondsOff)
+        }
+        let dateFormatter = NSDateFormatter()
+        updateTimeLabelWithDate(updatedDate)
+        dateFormatter.dateFormat = "ss.SSS"
+        dates += [(proposedDate: updatedDate, dateProposedAt: now, sliderValue: timeSlider!.value)]
+//        println(dates.count)
+//        println("now: \(dateFormatter.stringFromDate(now))")
+//        if updatedDate == nil {
+//            println("pro: now")
+//        }
+//        else {
+//            println("pro: \(dateFormatter.stringFromDate(updatedDate!))")
+//        }
+        
+    }
+    
+    @IBAction func slidingEnded() {
+//        println("sliding ended!")
+        let now = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MMM-d HH:mm:ss.SSS"
+        let tolerance = 0.1
+        while dates.count>0 {
+            var thisDate: (proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float) = dates.removeLast()
+            if now.timeIntervalSinceDate(thisDate.dateProposedAt) > tolerance {
+                dateToBeUsed = thisDate.proposedDate
+                updateTimeLabelWithDate(thisDate.proposedDate)
+                timeSlider!.setValue(thisDate.sliderValue, animated: true)
+//                if thisDate.proposedDate == nil {
+//                    println("submittedDate: (nil)")
+//                }
+//                else {
+//                    println("submitted date: \(dateFormatter.stringFromDate(thisDate.proposedDate!))")
+//                }
+                break
+            }
+        }
+        dates.removeAll(keepCapacity: false)
+    }
+    
+    func updateTimeLabelWithDate(date: NSDate?) {
+        if date == nil {
+        	timeLabel!.text = "now"
+        }
+        else {
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "MMM-d HH:mm"
+            let timeString = dateFormatter.stringFromDate(date!)
+            timeLabel!.text = "\(timeString)"
         }
     }
 

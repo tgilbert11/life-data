@@ -43,7 +43,7 @@ class SelectionViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let addedData = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![indexPath.row]!
         let newString = "&\(dataTypeName!)=\(addedData)"
-        println(newString)
+        //println(newString)
         request!.textBits.append(newString)
         request!.filledOutSoFar++
         
@@ -53,22 +53,22 @@ class SelectionViewController: UITableViewController {
             for item in request!.textBits {
                 requestURL += item
             }
-            println(requestURL)
+            //println(requestURL)
             let URL = NSURL(string: requestURL)!
             let response = String(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: nil)
-            println(response!)
+            //println(response!)
             if response! == "command recognized" {
                 self.navigationController!.popToRootViewControllerAnimated(true)
             }
             else {
-                println("oh crap")
+                //println("oh crap")
             }
         }
         else {
-            println("eff this, another one?")
+            //println("eff this, another one?")
             let nextDataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
             let type = request!.categoryDictionary[categoryName!]![nextDataTypeName]!["dataType"]!
-            println(type)
+            //println(type)
             if type == "s" {
                 self.performSegueWithIdentifier("showSelectionViewController", sender: self)
             }

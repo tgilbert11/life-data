@@ -38,11 +38,11 @@ class NumericViewController: UIViewController {
     }
     
     @IBAction func didTapOKButton() {
-        println("ok")
+        //println("ok")
         
         let addedData = textField!.text!
         let newString = "&\(dataTypeName!)=\(addedData)"
-        println(newString)
+        //println(newString)
         request!.textBits.append(newString)
         request!.filledOutSoFar++
         
@@ -52,22 +52,22 @@ class NumericViewController: UIViewController {
             for item in request!.textBits {
                 requestURL += item
             }
-            println(requestURL)
+            //println(requestURL)
             let URL = NSURL(string: requestURL)!
             let response = String(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: nil)
-            println(response!)
+            //println(response!)
             if response! == "command recognized" {
                 self.navigationController!.popToRootViewControllerAnimated(true)
             }
             else {
-                println("oh crap")
+                //println("oh crap")
             }
         }
         else {
-            println("eff this, another one?")
+            //println("eff this, another one?")
             let nextDataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
             let type = request!.categoryDictionary[categoryName!]![nextDataTypeName]!["dataType"]!
-            println(type)
+            //println(type)
             if type == "n" {
                 self.performSegueWithIdentifier("showNumericViewController", sender: self)
             }
