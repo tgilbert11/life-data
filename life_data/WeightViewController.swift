@@ -66,7 +66,7 @@ class WeightViewController: UIViewController {
     func getWeightData() {
         let requestString = "http://\(hostname!)/cgi-bin/database/read?username=\(username!)&category=\(category!)"
         //println(requestString)
-        let returnString = NSString(contentsOfURL: NSURL(string: requestString)!, encoding: NSUTF8StringEncoding, error: nil)
+        let returnString = try? NSString(contentsOfURL: NSURL(string: requestString)!, encoding: NSUTF8StringEncoding)
         //println(returnString!)
         let splitByBreak = returnString!.componentsSeparatedByString("<br>")
         var skippedFirstLineYet = false
@@ -77,13 +77,13 @@ class WeightViewController: UIViewController {
             }
             let splitByComma = line.componentsSeparatedByString(",")
             if splitByComma.count > 1 {
-                if splitByComma[1] as! String == " morning" {
+                if splitByComma[1] == " morning" {
                     //println("line: \(line)")
                     let dateFormatter = NSDateFormatter();
                     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                    let date = dateFormatter.dateFromString(splitByComma[0] as! String)
+                    let date = dateFormatter.dateFromString(splitByComma[0] )
                     //println("date: \(date!)")
-                    let numberString = (splitByComma[2] as! NSString)
+                    let numberString = (splitByComma[2] as NSString)
                     let weight = numberString.doubleValue
                     morningDataPoints += [(date: date!, weight: weight)]
                 }

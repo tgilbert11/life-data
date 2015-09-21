@@ -54,7 +54,7 @@ class TextViewController: UIViewController {
             }
             //println(requestURL)
             let URL = NSURL(string: requestURL)!
-            let response = String(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: nil)
+            let response = try? String(contentsOfURL: URL, encoding: NSUTF8StringEncoding)
             //println(response!)
             if response! == "command recognized" {
                 self.navigationController!.popToRootViewControllerAnimated(true)

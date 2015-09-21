@@ -24,8 +24,8 @@ class GraphView: UIView {
         CGContextAddLineToPoint(context, self.bounds.width, self.bounds.height)
         CGContextStrokePath(context)
         CGContextSetLineWidth(context, 2)
-        CGContextSetLineCap(context, kCGLineCapRound)
-        CGContextSetLineJoin(context, kCGLineJoinRound)
+        CGContextSetLineCap(context, CGLineCap.Round)
+        CGContextSetLineJoin(context, CGLineJoin.Round)
         CGContextBeginPath(context)
         var firstPointSet = false
         for point in drawingPoints! {

@@ -29,6 +29,11 @@ class ReadDataViewController: UIViewController {
             weightViewController.category = "weight"
             weightViewController.hostname = hostname
         }
+        if segue.identifier! == "showLast10ViewController" {
+            let last10ViewController = segue.destinationViewController as! Last10ViewController
+            last10ViewController.username = username!
+            last10ViewController.hostname = hostname
+        }
     }
     
 }

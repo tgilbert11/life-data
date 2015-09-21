@@ -39,12 +39,13 @@ class ViewController: UIViewController {
         var APIString = ""
         let URLPath = "http://taylorg.no-ip.org/cgi-bin/database/API"
         let URL = NSURL(string: URLPath)
-        let awayString = String(contentsOfURL: URL!, encoding: NSUTF8StringEncoding, error: nil)
+        let awayString = try? String(contentsOfURL: URL!, encoding: NSUTF8StringEncoding)
+        //APIString = awayString!
         //println(awayString)
         if awayString == nil {
             let URLPathHome = "http://192.168.1.110/cgi-bin/database/API"
             let URLHome = NSURL(string: URLPathHome)
-            let homeString = String(contentsOfURL: URLHome!, encoding: NSUTF8StringEncoding, error: nil)
+            let homeString = try? String(contentsOfURL: URLHome!, encoding: NSUTF8StringEncoding)
             //println(homeString)
             APIString = homeString!
             hostname = "192.168.1.110"
@@ -60,9 +61,9 @@ class ViewController: UIViewController {
         //let rawText = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: nil)!
         let splitByLines = APIString.componentsSeparatedByString("\n")
         for line in splitByLines {
-            if line.substringToIndex(advance(line.startIndex, 3)) == ">>>" {
+            if line.substringToIndex(line.startIndex.advancedBy(3)) == ">>>" {
                 //println("category")
-                let removedArrows = line.substringFromIndex(advance(line.startIndex, 3))
+                let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(3))
                 let splitByCommas = removedArrows.componentsSeparatedByString(",")
                 let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                 categoryName = shortName
@@ -82,12 +83,12 @@ class ViewController: UIViewController {
                 //let retrievedName = categoryDictionary[categoryName]!["descriptor"]!["descriptor"]!
                 //println("\(retrievedName)")
             }
-            else if line.substringToIndex(advance(line.startIndex, 2)) == ">>" {
+            else if line.substringToIndex(line.startIndex.advancedBy(2)) == ">>" {
                 //println("dataType")
-                let removedArrows = line.substringFromIndex(advance(line.startIndex, 2))
+                let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(2))
                 let splitByCommas = removedArrows.componentsSeparatedByString(",")
                 let fullDataType = splitByCommas[0].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                let shortDataType = fullDataType.substringToIndex(advance(fullDataType.startIndex, 1))
+                let shortDataType = fullDataType.substringToIndex(fullDataType.startIndex.advancedBy(1))
                 let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                 dataTypeName = shortName
                 let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
@@ -106,9 +107,9 @@ class ViewController: UIViewController {
                 //println("    \(retrievedName), \(retrievedType)")
 
             }
-            else if line.substringToIndex(advance(line.startIndex, 1)) == ">" {
+            else if line.substringToIndex(line.startIndex.advancedBy(1)) == ">" {
                 //println("dataItem")
-                let removedArrows = line.substringFromIndex(advance(line.startIndex, 1))
+                let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(1))
                 let splitByCommas = removedArrows.componentsSeparatedByString(",")
                 let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                 dataItemName = shortName
@@ -149,7 +150,7 @@ class ViewController: UIViewController {
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell") as! UITableViewCell
+        var cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
         cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]!["descriptor"]!["descriptor"]!
         //cell.detailTextLabel = UILabel()
         return cell
@@ -195,7 +196,7 @@ class ViewController: UIViewController {
             }
         }
         //println(request!.textBits[0])
-        var type = categoryDictionary[categoryString]![firstDataTypeName]!["dataType"]!
+        let type = categoryDictionary[categoryString]![firstDataTypeName]!["dataType"]!
         //println(type)
         if type == "s" {
             self.performSegueWithIdentifier("showSelectionViewController", sender: self)
@@ -258,7 +259,7 @@ class ViewController: UIViewController {
         dateFormatter.dateFormat = "MMM-d HH:mm:ss.SSS"
         let tolerance = 0.1
         while dates.count>0 {
-            var thisDate: (proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float) = dates.removeLast()
+            let thisDate: (proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float) = dates.removeLast()
             if now.timeIntervalSinceDate(thisDate.dateProposedAt) > tolerance {
                 dateToBeUsed = thisDate.proposedDate
                 updateTimeLabelWithDate(thisDate.proposedDate)

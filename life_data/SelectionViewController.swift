@@ -24,7 +24,7 @@ class SelectionViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier("basicCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("basicCell", forIndexPath: indexPath) 
         let cellShortName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![indexPath.row]!
         let cellText = request!.categoryDictionary[categoryName!]![dataTypeName!]![cellShortName]!
         cell.textLabel!.text = cellText
@@ -33,7 +33,7 @@ class SelectionViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let theseKeys = request!.categoryDictionary[categoryName!]![dataTypeName!]!.keys
-        return theseKeys.array.count-2
+        return theseKeys.count-2
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -55,7 +55,7 @@ class SelectionViewController: UITableViewController {
             }
             //println(requestURL)
             let URL = NSURL(string: requestURL)!
-            let response = String(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: nil)
+            let response = try? String(contentsOfURL: URL, encoding: NSUTF8StringEncoding)
             //println(response!)
             if response! == "command recognized" {
                 self.navigationController!.popToRootViewControllerAnimated(true)
