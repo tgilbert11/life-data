@@ -279,6 +279,7 @@ class ViewController: UIViewController {
     func updateTimeLabelWithDate(date: NSDate?) {
         if date == nil {
         	timeLabel!.text = "now"
+            self.dateToBeUsed = nil
         }
         else {
             let dateFormatter = NSDateFormatter()
@@ -286,6 +287,32 @@ class ViewController: UIViewController {
             let timeString = dateFormatter.stringFromDate(date!)
             timeLabel!.text = "\(timeString)"
         }
+    }
+    
+    @IBAction func didTapDeleteButton() {
+        let alertController = UIAlertController(title: "delete most recent data point", message: "This action cannot be undone.", preferredStyle: .ActionSheet)
+        let deleteAction = UIAlertAction(title: "delete", style: UIAlertActionStyle.Destructive, handler: {action in
+            print("delete")
+            let requestString = "http://\(self.hostname)/cgi-bin/database/deleteLast?username=\(self.username)"
+            //println(requestString)
+            let response = try? NSString(contentsOfURL: NSURL(string: requestString)!, encoding: NSUTF8StringEncoding)
+            
+            if !(response != nil) {
+                print("nil response")
+            }
+            else {
+                if response! != "command recognized" {
+                    print("failed to delete")
+                }
+                else {
+                    print("delete appears to have succeeded")
+                }
+            }
+        })
+        let cancelAction = UIAlertAction(title: "cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+        alertController.addAction(deleteAction)
+        alertController.addAction(cancelAction)
+        self.presentViewController(alertController, animated: true, completion: nil)
     }
 
     class LabelCell: UITableViewCell {
