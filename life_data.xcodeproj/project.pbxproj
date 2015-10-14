@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5236B5D1BC3420900FD76F7 /* WeekViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5236B5C1BC3420900FD76F7 /* WeekViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		B52780C71B7FC52500DDCB2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52780C61B7FC52500DDCB2E /* AppDelegate.swift */; };
 		B52780C91B7FC52500DDCB2E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52780C81B7FC52500DDCB2E /* ViewController.swift */; };
 		B52780CC1B7FC52500DDCB2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B52780CA1B7FC52500DDCB2E /* Main.storyboard */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B5236B5C1BC3420900FD76F7 /* WeekViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekViewController.swift; sourceTree = "<group>"; };
 		B52780C11B7FC52500DDCB2E /* life_data.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = life_data.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B52780C51B7FC52500DDCB2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B52780C61B7FC52500DDCB2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				B5B278DB1B898A1E00C90B6C /* WeightViewController.swift */,
 				B5B278DD1B89A68B00C90B6C /* GraphView.swift */,
 				B5A3018C1BAF895B0010449F /* Last10ViewController.swift */,
+				B5236B5C1BC3420900FD76F7 /* WeekViewController.swift */,
 			);
 			path = life_data;
 			sourceTree = "<group>";
@@ -252,6 +255,7 @@
 				B55033331B80267000F1365C /* NumericViewController.swift in Sources */,
 				B550332F1B7FFD1600F1365C /* SelectionViewController.swift in Sources */,
 				B5A3018D1BAF895B0010449F /* Last10ViewController.swift in Sources */,
+				B5236B5D1BC3420900FD76F7 /* WeekViewController.swift in Sources */,
 				B5B278DE1B89A68B00C90B6C /* GraphView.swift in Sources */,
 				B5B278DA1B897E6700C90B6C /* ReadDataViewController.swift in Sources */,
 				B52780C71B7FC52500DDCB2E /* AppDelegate.swift in Sources */,
