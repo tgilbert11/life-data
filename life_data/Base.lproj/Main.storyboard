@@ -138,7 +138,7 @@
                                     <segue destination="Q5R-gK-8p6" kind="show" identifier="showLast10ViewController" id="9vL-08-r5t"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lNY-uH-4Io">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lNY-uH-4Io">
                                 <rect key="frame" x="20" y="148" width="560" height="30"/>
                                 <state key="normal" title="Week"/>
                                 <connections>
