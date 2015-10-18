@@ -34,6 +34,12 @@ class ReadDataViewController: UIViewController {
             last10ViewController.username = username!
             last10ViewController.hostname = hostname
         }
+        if segue.identifier! == "showWeekViewController" {
+            let weekViewController = segue.destinationViewController as! WeekViewController
+            weekViewController.username = username!
+            weekViewController.hostname = hostname
+            print("seguePrepared")
+        }
     }
     
 }

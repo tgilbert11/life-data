@@ -150,7 +150,7 @@ class ViewController: UIViewController {
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
+        let cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
         cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]!["descriptor"]!["descriptor"]!
         //cell.detailTextLabel = UILabel()
         return cell
@@ -165,7 +165,7 @@ class ViewController: UIViewController {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        //let cell = tableView.cellForRowAtIndexPath(indexPath)
         //println(categoryByIndex[indexPath.row]![-1]![-1]!)
         theTableView!.deselectRowAtIndexPath(indexPath, animated: true)
         
@@ -189,7 +189,7 @@ class ViewController: UIViewController {
         request!.categoryDictionary = categoryDictionary
         request!.categoryByIndex = categoryByIndex
         request!.textBits.append("http://\(hostname)/cgi-bin/database/add?username=\(usernameString)&time=%22\(timeString)%22&category=\(categoryString)")
-        for (dataType, dataTypeDictionary) in categoryDictionary[categoryByIndex[indexPath.row]![-1]![-1]!]! {
+        for (dataType, _/*dataTypeDictionary*/) in categoryDictionary[categoryByIndex[indexPath.row]![-1]![-1]!]! {
             if dataType != "descriptor" {
                 //println("  \(dataType)")
                 request!.dataTypeNames.append(dataType)

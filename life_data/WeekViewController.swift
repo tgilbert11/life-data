@@ -7,3 +7,11 @@
 //
 
 import Foundation
+import UIKit
+
+class WeekViewController: UIViewController {
+
+    var username: String?
+    var hostname: String?
+
+}
