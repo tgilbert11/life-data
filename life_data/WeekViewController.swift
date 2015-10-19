@@ -19,7 +19,7 @@ class WeekViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let date = NSDate()
-        let eightDaysAgo = date.dateByAddingTimeInterval(-8*24*60*60)
+        let eightDaysAgo = date.dateByAddingTimeInterval(-7*24*60*60)
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let fromTime = dateFormatter.stringFromDate(eightDaysAgo)
