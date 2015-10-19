@@ -282,9 +282,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ugd-fK-mrs">
+                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="ugd-fK-mrs" customClass="WeekChartView" customModule="life_data" customModuleProvider="target">
                                 <rect key="frame" x="75" y="72" width="505" height="491"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="YDw-mV-rBx" userLabel="TimeStack">
                                 <rect key="frame" x="20" y="72" width="47" height="491"/>
@@ -409,6 +409,9 @@
                             <constraint firstItem="Vi9-gv-81R" firstAttribute="top" secondItem="ugd-fK-mrs" secondAttribute="bottom" constant="8" id="yy5-E3-Iid"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="weekChartView" destination="ugd-fK-mrs" id="LOm-XO-rw5"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fs2-eb-m9d" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

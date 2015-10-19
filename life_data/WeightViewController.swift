@@ -170,6 +170,7 @@ class WeightViewController: UIViewController {
     func redrawGraphView() {
         //println("view.width: \(CGRectGetWidth(graphView!.bounds)), view.height: \(CGRectGetHeight(graphView!.bounds))")
         graphView!.drawingPoints = drawingPoints
+        print("redrawGraphView")
         //graphView!.setNeedsDisplay()
     }
 }
