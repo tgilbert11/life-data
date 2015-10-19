@@ -57,11 +57,21 @@ class WeekViewController: UIViewController {
             //print(category)
             if category == "sleep" {
                 //print("yes")
+                let today = NSDate()
                 let dateFormatter = NSDateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 let date = dateFormatter.dateFromString(splitBySemicolon[0].componentsSeparatedByString("time: ")[1])!
+                dateFormatter.dateFormat = "e"
+                let todaysDOW = dateFormatter.stringFromDate(today)
+                let testDOW = dateFormatter.stringFromDate(date)
+                if !(todaysDOW == testDOW && today.timeIntervalSinceDate(date)>3*24*60*60) {
+                    //print("added")
+                    sleepData += [(date, splitBySemicolon[2].componentsSeparatedByString("event: ")[1])]
+                }
+//                else {
+//                    print("skipped")
+//                }
                 //print(date)
-                sleepData += [(date, splitBySemicolon[2].componentsSeparatedByString("event: ")[1])]
             }
         }
         //for (date, event) in sleepData {
