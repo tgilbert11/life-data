@@ -30,7 +30,7 @@ class WeekViewController: UIViewController {
     }
     
     func getDataFromTime(fromTime: String) {
-        let urlString = "http://\(hostname!)/cgi-bin/database/readFromTimeSN?username=\(username!)&fromTime=%22\(fromTime)%22"
+        let urlString = "http://\(hostname!)/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
         //print(urlString)
         let requestString = try? NSString(contentsOfURL: NSURL(string: urlString)!, encoding: NSUTF8StringEncoding)
         //print(requestString!)
