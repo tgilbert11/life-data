@@ -90,7 +90,7 @@ class WeekChartView: UIView {
                 height = previousY! - startingY!
                 
                 
-                if event == "alarm went off" {
+                if event == "alarmWentOff" {
                     if state == "unknown" || state == "asleep" {
                         CGContextSetFillColorWithColor(context, sleepColor)
                         CGContextFillRect(context, CGRectMake(leftEdge!, startingY!, width!, height!))
@@ -98,7 +98,7 @@ class WeekChartView: UIView {
                         state = "snoozing"
                     }
                 }
-                else if event == "woke up" {
+                else if event == "wokeUp" {
                     if state == "unknown" || state == "asleep" {
                         CGContextSetFillColorWithColor(context, sleepColor)
                         CGContextFillRect(context, CGRectMake(leftEdge!, startingY!, width!, height!))
@@ -112,7 +112,7 @@ class WeekChartView: UIView {
                         state = "awake"
                     }
                 }
-                else if event == "went to bed" {
+                else if event == "wentToBed" {
                     if state == "unknown" || state == "awake" {
                         previousY = startingY!
                         state = "asleep"
