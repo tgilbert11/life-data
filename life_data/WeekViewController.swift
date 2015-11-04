@@ -30,7 +30,7 @@ class WeekViewController: UIViewController {
     }
     
     func getDataFromTime(fromTime: String) {
-        let urlString = "http://\(hostname!)/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
+        let urlString = "http://\(hostname!)/cgi-bin/database/readFromTimeSN?username=\(username!)&fromTime=%22\(fromTime)%22"
         //print(urlString)
         let requestString = try? NSString(contentsOfURL: NSURL(string: urlString)!, encoding: NSUTF8StringEncoding)
         //print(requestString!)
@@ -53,20 +53,20 @@ class WeekViewController: UIViewController {
         for line in data {
             //print(line)
             let splitBySemicolon = line.componentsSeparatedByString(";")
-            let category = splitBySemicolon[1].componentsSeparatedByString("category: ")[1]
+            let category = splitBySemicolon[1].componentsSeparatedByString("category:")[1]
             //print(category)
             if category == "sleep" {
                 //print("yes")
                 let today = NSDate()
                 let dateFormatter = NSDateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                let date = dateFormatter.dateFromString(splitBySemicolon[0].componentsSeparatedByString("time: ")[1])!
+                let date = dateFormatter.dateFromString(splitBySemicolon[0].componentsSeparatedByString("time:")[1])!
                 dateFormatter.dateFormat = "e"
                 let todaysDOW = dateFormatter.stringFromDate(today)
                 let testDOW = dateFormatter.stringFromDate(date)
                 if !(todaysDOW == testDOW && today.timeIntervalSinceDate(date)>3*24*60*60) {
                     //print("added")
-                    sleepData += [(date, splitBySemicolon[2].componentsSeparatedByString("event: ")[1])]
+                    sleepData += [(date, splitBySemicolon[2].componentsSeparatedByString("event:")[1])]
                 }
 //                else {
 //                    print("skipped")
