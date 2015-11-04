@@ -12,6 +12,7 @@ import UIKit
 class WeekChartView: UIView {
     
     var sleepData: [(date: NSDate, event: String)]?
+    var drivingTimeData: [(date: NSDate, event: String)]?
     
     override func drawRect(rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
@@ -36,17 +37,18 @@ class WeekChartView: UIView {
         if sleepData != nil {
             let sleepColor = UIColor(red: 0.01, green: 0.2, blue: 0.01, alpha: 0.8).CGColor
             let snoozeColor = UIColor(red: 0.52, green: 0.06, blue: 0.0, alpha: 0.8).CGColor
+            
+            sleepData!.sortInPlace { $0.date.compare($1.date) == NSComparisonResult.OrderedAscending }
+
             let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
+//            dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
             //            for (date, event) in sleepData! {
             //                print("date: \(dateFormatter.stringFromDate(date)), event: \(event)")
             //            }
             //            print("")
-            sleepData!.sortInPlace { $0.date.compare($1.date) == NSComparisonResult.OrderedAscending }
-            for (date, event) in sleepData! {
-                print("date: \(dateFormatter.stringFromDate(date)), event: \(event)")
-            }
-            
+//            for (date, event) in sleepData! {
+//                print("date: \(dateFormatter.stringFromDate(date)), event: \(event)")
+//            }
             dateFormatter.dateFormat = "e"
             
             var state = "unknown"
@@ -116,6 +118,94 @@ class WeekChartView: UIView {
                     if state == "unknown" || state == "awake" {
                         previousY = startingY!
                         state = "asleep"
+                    }
+                }
+            }
+
+            
+//            CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1)
+//            CGContextSetLineWidth(context, 1)
+//            CGContextMoveToPoint(context, 0, 0)
+//            for (date, _) in sleepData! {
+//                let point = CGPointForDate(date, offset: -0.5)
+//                CGContextAddLineToPoint(context, point.x, point.y)
+//            }
+//            CGContextStrokePath(context)
+//            CGContextBeginPath(context)
+        }
+        
+        if drivingTimeData != nil {
+            let drivingColor = UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 0.8).CGColor
+            
+            drivingTimeData!.sortInPlace { $0.date.compare($1.date) == NSComparisonResult.OrderedAscending }
+
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
+            for (date, event) in drivingTimeData! {
+                print("date: \(dateFormatter.stringFromDate(date)), event: \(event)")
+            }
+            dateFormatter.dateFormat = "e"
+            
+            var state = "unknown"
+            var lastDay: Int?
+            var leftEdge: CGFloat?
+            var width: CGFloat?
+            var startingY: CGFloat?
+            var previousY: CGFloat?
+            var height: CGFloat?
+            for (date, event) in drivingTimeData! {
+                if lastDay == nil {
+                    lastDay = Int(dateFormatter.stringFromDate(date))!
+                    var point = CGPointForDate(date, offset: -0.5)
+                    leftEdge = point.x
+                    startingY = point.y
+                    previousY = self.bounds.height*8/9+self.bounds.height*0.5/9
+                    point = CGPointForDate(date, offset: 0.5)
+                    width = point.x - leftEdge!
+                    height = previousY! - startingY!
+                }
+                let currentDay = Int(dateFormatter.stringFromDate(date))!
+                if currentDay != lastDay {
+                    lastDay = currentDay
+                    var point = CGPointForDate(date, offset: -0.5)
+                    let laterDate = date.dateByAddingTimeInterval(30*60)
+                    let laterPoint = CGPointForDate(laterDate, offset: -0.5)
+                    if state == "driving" {
+                        print("startingY: \(startingY!), point.y: \(point.y), laterPoint.y: \(laterPoint.y)")
+                        let clearDrivingColor = UIColor.clearColor().CGColor
+                        let gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), [drivingColor, drivingColor, clearDrivingColor], [0, 0.3, 1])
+                        CGContextSaveGState(context)
+                        let path = UIBezierPath(rect: CGRectMake(leftEdge!, startingY! - (point.y-laterPoint.y), width!, point.y-laterPoint.y))
+                        path.addClip()
+                        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, startingY!), CGPointMake(0, startingY! - (point.y-laterPoint.y)), CGGradientDrawingOptions.DrawsBeforeStartLocation)
+                        CGContextRestoreGState(context)
+                        //CGContextSetFillColorWithColor(context, drivingColor)
+                        //CGContextFillRect(context, CGRectMake(leftEdge!, self.bounds.height*0.5/9, width!, startingY!-self.bounds.height*0.5/9))
+                       
+                    }
+                    leftEdge = point.x
+                    point = CGPointForDate(date, offset: 0.5)
+                    width = point.x - leftEdge!
+                    previousY = self.bounds.height*8/9+self.bounds.height*0.5/9
+                    state = "unknown"
+                }
+                let point = CGPointForDate(date, offset: 0)
+                startingY = point.y
+                height = previousY! - startingY!
+                
+                
+                if event == "leftForWork" || event == "leftForHome" {
+                    if state == "unknown" || state == "notDriving" {
+                        previousY = startingY!
+                        state = "driving"
+                    }
+                }
+                else if event == "arrivedAtWork" || event == "arrivedAtHome" {
+                    if state == "driving" {
+                        CGContextSetFillColorWithColor(context, drivingColor)
+                        CGContextFillRect(context, CGRectMake(leftEdge!, startingY!, width!, height!))
+                        previousY = startingY!
+                        state = "notDriving"
                     }
                 }
             }
