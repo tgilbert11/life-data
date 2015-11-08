@@ -26,8 +26,6 @@ class WeekViewController: UIViewController {
         //print(fromTime)
         getDataFromTime(fromTime)
         self.weekChartView!.processedData += createProcessedDataFromRaw()
-        addSleepData()
-        addDrivingTimeData()
         //printData()
     }
     
@@ -76,70 +74,6 @@ class WeekViewController: UIViewController {
         return processedData
     }
 
-    func addSleepData() {
-        var sleepData: [(date: NSDate, event: String)] = []
-        for line in data {
-            //print(line)
-            let splitBySemicolon = line.componentsSeparatedByString(";")
-            let category = splitBySemicolon[1].componentsSeparatedByString("category:")[1]
-            //print(category)
-            if category == "sleep" {
-                //print("yes")
-                let today = NSDate()
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                let date = dateFormatter.dateFromString(splitBySemicolon[0].componentsSeparatedByString("time:")[1])!
-                dateFormatter.dateFormat = "e"
-                let todaysDOW = dateFormatter.stringFromDate(today)
-                let testDOW = dateFormatter.stringFromDate(date)
-                if !(todaysDOW == testDOW && today.timeIntervalSinceDate(date)>3*24*60*60) {
-                    //print("added")
-                    sleepData += [(date, splitBySemicolon[2].componentsSeparatedByString("event:")[1])]
-                }
-//                else {
-//                    print("skipped")
-//                }
-                //print(date)
-            }
-        }
-        //for (date, event) in sleepData {
-        //    print("date: \(date), event: \(event)")
-        //}
-        self.weekChartView!.sleepData = sleepData
-    }
-    
-    func addDrivingTimeData() {
-        var drivingTimeData: [(date: NSDate, event: String)] = []
-        for line in data {
-            //print(line)
-            let splitBySemicolon = line.componentsSeparatedByString(";")
-            let category = splitBySemicolon[1].componentsSeparatedByString("category:")[1]
-            //print(category)
-            if category == "drivingTime" {
-                //print("yes")
-                let today = NSDate()
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                let date = dateFormatter.dateFromString(splitBySemicolon[0].componentsSeparatedByString("time:")[1])!
-                dateFormatter.dateFormat = "e"
-                let todaysDOW = dateFormatter.stringFromDate(today)
-                let testDOW = dateFormatter.stringFromDate(date)
-                if !(todaysDOW == testDOW && today.timeIntervalSinceDate(date)>3*24*60*60) {
-                    //print("added")
-                    drivingTimeData += [(date, splitBySemicolon[2].componentsSeparatedByString("tripType:")[1])]
-                }
-//                else {
-//                    print("skipped")
-//                }
-                //print(date)
-            }
-        }
-        //for (date, event) in sleepData {
-        //    print("date: \(date), event: \(event)")
-        //}
-        self.weekChartView!.drivingTimeData = drivingTimeData
-    }
-    
     func printData() {
         var returnString = ""
         for line in data {
@@ -157,9 +91,5 @@ class WeekViewController: UIViewController {
         }
         print(returnString)
     }
-    
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//    }
     
 }

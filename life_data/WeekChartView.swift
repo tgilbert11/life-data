@@ -11,9 +11,6 @@ import UIKit
 
 class WeekChartView: UIView {
     
-    var sleepData: [(date: NSDate, event: String)]?
-    var drivingTimeData: [(date: NSDate, event: String)]?
-    
     var processedData: [(date: NSDate, category: String, event: String)] = []
     
     // sleep, snooze, drive
