@@ -20,19 +20,26 @@ class WeekChartView: UIView {
     // drinks: alcohol, water, coffee, otherDrink
     var lines: [(date: NSDate, eventType: String)] = []
     
-    let sleepColor = UIColor(red: 0.01, green: 0.2, blue: 0.01, alpha: 0.8).CGColor
-    let snoozeColor = UIColor(red: 0.52, green: 0.06, blue: 0.0, alpha: 0.8).CGColor
-    let driveColor = UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 0.8).CGColor
+    let sleepColor = UIColor(red: 0.01, green: 0.2, blue: 0.01, alpha: 0.7).CGColor
+    let snoozeColor = UIColor(red: 0.42, green: 0.05, blue: 0.0, alpha: 0.7).CGColor
+    let driveColor = UIColor(red: 0.24, green: 0.24, blue: 0.35, alpha: 0.6).CGColor
     let gradientHeightInSeconds = 30*60
     
     let alcoholColor = UIColor(red: 0.8, green: 0, blue: 0, alpha: 1).CGColor
-    let coffeeColor = UIColor(red: 0.48, green: 0.22, blue: 0, alpha: 1).CGColor
+    let coffeeColor = UIColor(red: 0.54, green: 0.26, blue: 0, alpha: 1).CGColor
     let waterColor = UIColor(red: 0.07, green: 0.41, blue: 0.85, alpha: 1).CGColor
     let otherDrinkColor = UIColor(red: 0.07, green: 0.41, blue: 0.85, alpha: 1).CGColor
     let drinkLineWidth = CGFloat(1)
+    let drinkOffset = CGFloat(0.3)
     
-    let mealColor = UIColor(red: 0.77, green: 0.69, blue: 0, alpha: 1).CGColor
+    //let mealColor = UIColor(red: 0.77, green: 0.69, blue: 0, alpha: 1).CGColor
+    let mealColor = UIColor(red: 0.1, green: 0, blue: 0, alpha: 0.6).CGColor
     let mealLineWidth = CGFloat(4)
+    let breakfastOffset = CGFloat(0.25)
+    let brunchOffset = CGFloat(0.3)
+    let lunchOffset = CGFloat(0.35)
+    let snackOffset = CGFloat(0.15)
+    let dinnerOffset = CGFloat(0.375)
     
     func createGraphicsObjects() {
         
@@ -235,17 +242,17 @@ class WeekChartView: UIView {
         }
         
         
-        // Drinks
-        //    events: alcohol, water, coffee, otherDrink
+        // Meals
+        //    events: breakfast, brunch, lunch, snack, dinner
         for event in processedData {
-            if event.category == "drinks" {
+            if event.category == "meals" {
                 lines += [(date: event.date, eventType: event.event)]
             }
         }
         
         
-        // Meals
-        //    events: breakfast, brunch, lunch, snack, dinner
+        // Drinks
+        //    events: alcohol, water, coffee, otherDrink
         for event in processedData {
             if event.category == "drinks" {
                 lines += [(date: event.date, eventType: event.event)]
@@ -281,7 +288,7 @@ class WeekChartView: UIView {
         
         
         CGContextSetRGBStrokeColor(context, 0.75, 0.75, 0.75, 1)
-        CGContextSetLineWidth(context, 1)
+        CGContextSetLineWidth(context, 0.6)
         for i in 0...8 {
             CGContextMoveToPoint(context, 0, self.bounds.height*(CGFloat(i)+0.5)/9)
             CGContextAddLineToPoint(context, self.bounds.width, self.bounds.height*(CGFloat(i)+0.5)/9)
@@ -444,30 +451,68 @@ class WeekChartView: UIView {
         }
         
         for line in lines {
-            let lineStartingCGPoint = CGPointForDate(line.date, offset: -0.35)
-            let lineEndingCGPoint = CGPointForDate(line.date, offset: 0.35)
             switch line.eventType {
-            case "alcohol":
-                CGContextSetStrokeColorWithColor(context, alcoholColor)
+            case "alcohol", "water", "coffee", "otherDrink":
+                let lineStartingCGPoint = CGPointForDate(line.date, offset: -drinkOffset)
+                let lineEndingCGPoint = CGPointForDate(line.date, offset: drinkOffset)
                 CGContextSetLineWidth(context, drinkLineWidth)
-            case "water":
-                CGContextSetStrokeColorWithColor(context, waterColor)
-                CGContextSetLineWidth(context, drinkLineWidth)
-            case "coffee":
-                CGContextSetStrokeColorWithColor(context, coffeeColor)
-                CGContextSetLineWidth(context, drinkLineWidth)
-            case "otherDrink":
-                CGContextSetStrokeColorWithColor(context, otherDrinkColor)
-                CGContextSetLineWidth(context, drinkLineWidth)
+                CGContextSetLineCap(context, CGLineCap.Butt)
+                switch line.eventType {
+                case "alcohol":
+                    CGContextSetStrokeColorWithColor(context, alcoholColor)
+                case "water":
+                    CGContextSetStrokeColorWithColor(context, waterColor)
+                case "coffee":
+                    CGContextSetStrokeColorWithColor(context, coffeeColor)
+                case "otherDrink":
+                    CGContextSetStrokeColorWithColor(context, otherDrinkColor)
+                default:
+                    break
+                }
+                CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
+                CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
+                CGContextStrokePath(context)
             case "breakfast", "brunch", "lunch", "snack", "dinner":
                 CGContextSetStrokeColorWithColor(context, mealColor)
                 CGContextSetLineWidth(context, mealLineWidth)
+                CGContextSetLineCap(context, CGLineCap.Round)
+                switch line.eventType {
+                case "breakfast":
+                    let lineStartingCGPoint = CGPointForDate(line.date, offset: -breakfastOffset)
+                    let lineEndingCGPoint = CGPointForDate(line.date, offset: breakfastOffset)
+                    CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
+                    CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
+                    CGContextStrokePath(context)
+                case "brunch":
+                    let lineStartingCGPoint = CGPointForDate(line.date, offset: -brunchOffset)
+                    let lineEndingCGPoint = CGPointForDate(line.date, offset: brunchOffset)
+                    CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
+                    CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
+                    CGContextStrokePath(context)
+                case "lunch":
+                    let lineStartingCGPoint = CGPointForDate(line.date, offset: -lunchOffset)
+                    let lineEndingCGPoint = CGPointForDate(line.date, offset: lunchOffset)
+                    CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
+                    CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
+                    CGContextStrokePath(context)
+                case "snack":
+                    let lineStartingCGPoint = CGPointForDate(line.date, offset: -snackOffset)
+                    let lineEndingCGPoint = CGPointForDate(line.date, offset: snackOffset)
+                    CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
+                    CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
+                    CGContextStrokePath(context)
+                case "dinner":
+                    let lineStartingCGPoint = CGPointForDate(line.date, offset: -dinnerOffset)
+                    let lineEndingCGPoint = CGPointForDate(line.date, offset: dinnerOffset)
+                    CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
+                    CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
+                    CGContextStrokePath(context)
+                default:
+                    break
+                }
             default:
                 break
             }
-            CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
-            CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
-            CGContextStrokePath(context)
         }
      }
     
