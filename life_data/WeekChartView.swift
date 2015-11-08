@@ -17,10 +17,19 @@ class WeekChartView: UIView {
     // gradient: <0 for known end time, 0 for filled, >0 for known start time
     var rectangles: [(startDate: NSDate, endDate: NSDate, eventType: String, gradient: Int)] = []
     
+    // drinks: alcohol, water, coffee, otherDrink
+    var lines: [(date: NSDate, eventType: String)] = []
+    
     let sleepColor = UIColor(red: 0.01, green: 0.2, blue: 0.01, alpha: 0.8).CGColor
     let snoozeColor = UIColor(red: 0.52, green: 0.06, blue: 0.0, alpha: 0.8).CGColor
     let driveColor = UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 0.8).CGColor
     let gradientHeightInSeconds = 30*60
+    
+    let alcoholColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1).CGColor
+    let coffeeColor = UIColor(red: 0.48, green: 0.22, blue: 0, alpha: 1).CGColor
+    let waterColor = UIColor(red: 0.07, green: 0.41, blue: 0.85, alpha: 1).CGColor
+    let otherDrinkColor = UIColor(red: 0.07, green: 0.41, blue: 0.85, alpha: 1).CGColor
+    let lineWidth = CGFloat(1)
     
     func createGraphicsObjects() {
         
@@ -30,6 +39,7 @@ class WeekChartView: UIView {
         let dateComponents = NSCalendar.currentCalendar().components([.Year, .Month, .Day, .TimeZone], fromDate: today)
         let startOfToday = NSCalendar.currentCalendar().dateFromComponents(dateComponents)!
         let startOfWeek = NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -6, toDate: startOfToday, options: [])!
+        
         
         // Sleep
         //    states: unknown, sleeping, snoozing, awake
@@ -154,14 +164,6 @@ class WeekChartView: UIView {
             }
         }
         
-        for rectangle in rectangles {
-            if rectangle.eventType == "sleep" || rectangle.eventType == "snooze" {
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
-                //print("event: \(rectangle.eventType), startTime: \(dateFormatter.stringFromDate(rectangle.startDate)), endTime: \(dateFormatter.stringFromDate(rectangle.endDate)), gradient: \(rectangle.gradient)")
-            }
-        }
-        
         
         // Driving Time
         //    states: unknown, driving, notDriving
@@ -169,6 +171,7 @@ class WeekChartView: UIView {
         state = "unknown"
         dateOfLastStateChange = startOfWeek
         for event in processedData {
+        
             if event.category == "drivingTime" {
                 switch event.event {
                 case "leftForWork", "leftForHome":
@@ -227,6 +230,15 @@ class WeekChartView: UIView {
                 
             }
         }
+        
+        
+        // Drinks
+        //    events: alcohol, water, coffee, otherDrink
+        for event in processedData {
+            if event.category == "drinks" {
+                lines += [(date: event.date, eventType: event.event)]
+            }
+        }
     }
     
     func getIndexOfMostRecentRectangleOfEventType(eventType: String) -> Int? {
@@ -255,6 +267,7 @@ class WeekChartView: UIView {
         
         let context = UIGraphicsGetCurrentContext()
         
+        
         CGContextSetRGBStrokeColor(context, 0.75, 0.75, 0.75, 1)
         CGContextSetLineWidth(context, 1)
         for i in 0...8 {
@@ -272,8 +285,8 @@ class WeekChartView: UIView {
             }
         }
         
-        
         for rectangle in rectangles {
+    
             var rectangleColor = UIColor.clearColor().CGColor
             switch rectangle.eventType {
             case "sleep":
@@ -416,6 +429,27 @@ class WeekChartView: UIView {
                     }
                 }
             }
+        }
+        
+        for line in lines {
+            let lineStartingCGPoint = CGPointForDate(line.date, offset: -0.3)
+            let lineEndingCGPoint = CGPointForDate(line.date, offset: 0.3)
+            switch line.eventType {
+            case "alcohol":
+                CGContextSetStrokeColorWithColor(context, alcoholColor)
+            case "water":
+                CGContextSetStrokeColorWithColor(context, waterColor)
+            case "coffee":
+                CGContextSetStrokeColorWithColor(context, coffeeColor)
+            case "otherDrink":
+                CGContextSetStrokeColorWithColor(context, otherDrinkColor)
+            default:
+                break
+            }
+            CGContextSetLineWidth(context, lineWidth)
+            CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
+            CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
+            CGContextStrokePath(context)
         }
      }
     
