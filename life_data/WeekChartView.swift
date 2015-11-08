@@ -23,6 +23,7 @@ class WeekChartView: UIView {
     let sleepColor = UIColor(red: 0.01, green: 0.2, blue: 0.01, alpha: 0.8).CGColor
     let snoozeColor = UIColor(red: 0.52, green: 0.06, blue: 0.0, alpha: 0.8).CGColor
     let driveColor = UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 0.8).CGColor
+    let gradientHeightInSeconds = 30*60
     
     func createGraphicsObjects() {
         
@@ -276,44 +277,148 @@ class WeekChartView: UIView {
         
         
         for rectangle in rectangles {
+            var rectangleColor = UIColor.clearColor().CGColor
             switch rectangle.eventType {
             case "sleep":
-                CGContextSetFillColorWithColor(context, sleepColor)
+                rectangleColor = sleepColor
             case "snooze":
-                CGContextSetFillColorWithColor(context, snoozeColor)
+                rectangleColor = snoozeColor
             case "drive":
-                CGContextSetFillColorWithColor(context, driveColor)
+                rectangleColor = driveColor
             default:
                 break
             }
             
-            let startingDateComponents = NSCalendar.currentCalendar().components([.Day], fromDate: rectangle.startDate)
-            let endingDateComponents = NSCalendar.currentCalendar().components([.Day], fromDate: rectangle.endDate)
-            if startingDateComponents.day == endingDateComponents.day {
-                let startingCGPoint = CGPointForDate(rectangle.startDate, offset: -0.5)
-                let endingCGPoint = CGPointForDate(rectangle.endDate, offset: 0.5)
-                let cgRect = CGRectMake(startingCGPoint.x, startingCGPoint.y, endingCGPoint.x - startingCGPoint.x, endingCGPoint.y - startingCGPoint.y)
-                CGContextFillRect(context, cgRect)
+            if rectangle.gradient == 0 {
+                CGContextSetFillColorWithColor(context, rectangleColor)
+                let startingDateComponents = NSCalendar.currentCalendar().components([.Day], fromDate: rectangle.startDate)
+                let endingDateComponents = NSCalendar.currentCalendar().components([.Day], fromDate: rectangle.endDate)
+                if startingDateComponents.day == endingDateComponents.day {
+                    let startingCGPoint = CGPointForDate(rectangle.startDate, offset: -0.5)
+                    let endingCGPoint = CGPointForDate(rectangle.endDate, offset: 0.5)
+                    let cgRect = CGRectMake(startingCGPoint.x, startingCGPoint.y, endingCGPoint.x - startingCGPoint.x, endingCGPoint.y - startingCGPoint.y)
+                    CGContextFillRect(context, cgRect)
+                }
+                else {
+                    let firstDayEndingDateComponents = NSCalendar.currentCalendar().components([.Year, .Month, .Day, .TimeZone], fromDate: rectangle.startDate)
+                    let startOfFirstDay = NSCalendar.currentCalendar().dateFromComponents(firstDayEndingDateComponents)!
+                    let startOfSecondDay = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: startOfFirstDay, options: [])!
+                    let endOfFirstDay = NSCalendar.currentCalendar().dateByAddingUnit(.Second, value: -1, toDate: startOfSecondDay, options: [])!
+                    
+                    let firstDayStartingCGPoint = CGPointForDate(rectangle.startDate, offset: -0.5)
+                    let firstDayEndingCGPoint = CGPointForDate(endOfFirstDay, offset: 0.5)
+                    let secondDayStartingCGPoint = CGPointForDate(startOfSecondDay, offset: -0.5)
+                    let secondDayEndingCGPoint = CGPointForDate(rectangle.endDate, offset: 0.5)
+                    
+                    let firstDayCGRect = CGRectMake(firstDayStartingCGPoint.x, firstDayStartingCGPoint.y, firstDayEndingCGPoint.x - firstDayStartingCGPoint.x, firstDayEndingCGPoint.y - firstDayStartingCGPoint.y)
+                    let secondDayCGRect = CGRectMake(secondDayStartingCGPoint.x, secondDayStartingCGPoint.y, secondDayEndingCGPoint.x - secondDayStartingCGPoint.x, secondDayEndingCGPoint.y - secondDayStartingCGPoint.y)
+                    
+                    CGContextFillRect(context, firstDayCGRect)
+                    CGContextFillRect(context, secondDayCGRect)
+                }
             }
             else {
-                let firstDayEndingDateComponents = NSCalendar.currentCalendar().components([.Year, .Month, .Day, .TimeZone], fromDate: rectangle.startDate)
-                let startOfFirstDay = NSCalendar.currentCalendar().dateFromComponents(firstDayEndingDateComponents)!
-                let startOfSecondDay = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: startOfFirstDay, options: [])!
-                let endOfFirstDay = NSCalendar.currentCalendar().dateByAddingUnit(.Second, value: -1, toDate: startOfSecondDay, options: [])!
-                
-                let firstDayStartingCGPoint = CGPointForDate(rectangle.startDate, offset: -0.5)
-                let firstDayEndingCGPoint = CGPointForDate(endOfFirstDay, offset: 0.5)
-                let secondDayStartingCGPoint = CGPointForDate(startOfSecondDay, offset: -0.5)
-                let secondDayEndingCGPoint = CGPointForDate(rectangle.endDate, offset: 0.5)
-                
-                let firstDayCGRect = CGRectMake(firstDayStartingCGPoint.x, firstDayStartingCGPoint.y, firstDayEndingCGPoint.x - firstDayStartingCGPoint.x, firstDayEndingCGPoint.y - firstDayStartingCGPoint.y)
-                let secondDayCGRect = CGRectMake(secondDayStartingCGPoint.x, secondDayStartingCGPoint.y, secondDayEndingCGPoint.x - secondDayStartingCGPoint.x, secondDayEndingCGPoint.y - secondDayStartingCGPoint.y)
-                
-                CGContextFillRect(context, firstDayCGRect)
-                CGContextFillRect(context, secondDayCGRect)
+            	if rectangle.gradient > 0 { // known start time
+                    let gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), [rectangleColor, rectangleColor, UIColor.clearColor().CGColor], [0, 0.3, 1])!
+                    let gradientStartDate = rectangle.startDate
+                    let gradientEndDate = NSCalendar.currentCalendar().dateByAddingUnit(.Second, value: gradientHeightInSeconds, toDate: gradientStartDate, options: [])!
+                    let gradientStartDateComponents = NSCalendar.currentCalendar().components([.Day], fromDate: gradientStartDate)
+                    let gradientEndDateComponents = NSCalendar.currentCalendar().components([.Day], fromDate: gradientEndDate)
+                    if gradientStartDateComponents.day == gradientEndDateComponents.day { // gradient is in same day
+                        let gradientStartingCGPoint = CGPointForDate(gradientStartDate, offset: -0.5)
+                        let gradientEndingCGPoint = CGPointForDate(gradientEndDate, offset: 0.5)
+                        let gradientCGRect = CGRectMake(gradientStartingCGPoint.x, gradientStartingCGPoint.y, gradientEndingCGPoint.x - gradientStartingCGPoint.x, gradientEndingCGPoint.y - gradientStartingCGPoint.y)
+                        let clippingPath = UIBezierPath(rect: gradientCGRect)
+                        CGContextSaveGState(context)
+                        clippingPath.addClip()
+                        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, gradientStartingCGPoint.y), CGPointMake(0, gradientEndingCGPoint.y), CGGradientDrawingOptions.DrawsBeforeStartLocation)
+                        CGContextRestoreGState(context)
+                    }
+                    else { // gradient spans 2 days
+                        let firstDayStartingDate = gradientStartDate
+                        let firstDayComponents = NSCalendar.currentCalendar().components([.Year, .Month, .Day, .TimeZone], fromDate: firstDayStartingDate)
+                        let startOfFirstDay = NSCalendar.currentCalendar().dateFromComponents(firstDayComponents)!
+                        let startOfSecondDay = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: startOfFirstDay, options: [])!
+                        let endOfFirstDay = NSCalendar.currentCalendar().dateByAddingUnit(.Second, value: -1, toDate: startOfSecondDay, options: [])!
+                        let secondDayEndingDate = gradientEndDate
+                        
+                        let firstDayStartingCGPoint = CGPointForDate(firstDayStartingDate, offset: -0.5)
+                        let firstDayEndingCGPoint = CGPointForDate(endOfFirstDay, offset: 0.5)
+                        let secondDayStartingCGPoint = CGPointForDate(startOfSecondDay, offset: -0.5)
+                        let secondDayEndingCGPoint = CGPointForDate(secondDayEndingDate, offset: 0.5)
+                        let totalYCGPoints = firstDayStartingCGPoint.y - firstDayEndingCGPoint.y + secondDayStartingCGPoint.y - secondDayEndingCGPoint.y
+                        
+                        let firstDayGradientCGRect = CGRectMake(firstDayStartingCGPoint.x, firstDayStartingCGPoint.y - totalYCGPoints, firstDayEndingCGPoint.x - firstDayStartingCGPoint.x, totalYCGPoints)
+                        let secondDayGradientCGRect = CGRectMake(secondDayStartingCGPoint.x, secondDayEndingCGPoint.y, secondDayEndingCGPoint.x - secondDayStartingCGPoint.x, totalYCGPoints)
+                        
+                        let firstDayClippingPathRect = CGRectMake(firstDayStartingCGPoint.x, firstDayStartingCGPoint.y, firstDayEndingCGPoint.x - firstDayStartingCGPoint.x, firstDayEndingCGPoint.y - firstDayStartingCGPoint.y)
+                        let secondDayClippingPathRect = CGRectMake(secondDayStartingCGPoint.x, secondDayStartingCGPoint.y, secondDayEndingCGPoint.x - secondDayStartingCGPoint.x, secondDayEndingCGPoint.y - secondDayStartingCGPoint.y)
+                        
+                        let firstDayClippingPath = UIBezierPath(rect: firstDayClippingPathRect)
+                        let secondDayClippingPath = UIBezierPath(rect: secondDayClippingPathRect)
+                        
+                        CGContextSaveGState(context)
+                        firstDayClippingPath.addClip()
+                        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, firstDayGradientCGRect.origin.y + totalYCGPoints), CGPointMake(0, firstDayGradientCGRect.origin.y), [])
+                        CGContextRestoreGState(context)
+                        
+                        CGContextSaveGState(context)
+                        secondDayClippingPath.addClip()
+                        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, secondDayGradientCGRect.origin.y + totalYCGPoints), CGPointMake(0, secondDayGradientCGRect.origin.y), [])
+                        CGContextRestoreGState(context)
+                    }
+                }
+                else { // known end time
+                    let gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), [rectangleColor, rectangleColor, UIColor.clearColor().CGColor], [1, 0.7, 0])!
+                    let gradientEndDate = rectangle.endDate
+                    let gradientStartDate = NSCalendar.currentCalendar().dateByAddingUnit(.Second, value: -gradientHeightInSeconds, toDate: gradientEndDate, options: [])!
+                    let gradientStartDateComponents = NSCalendar.currentCalendar().components([.Day], fromDate: gradientStartDate)
+                    let gradientEndDateComponents = NSCalendar.currentCalendar().components([.Day], fromDate: gradientEndDate)
+                    if gradientStartDateComponents.day == gradientEndDateComponents.day { // gradient is in same day
+                        let gradientStartingCGPoint = CGPointForDate(gradientStartDate, offset: -0.5)
+                        let gradientEndingCGPoint = CGPointForDate(gradientEndDate, offset: 0.5)
+                        let gradientCGRect = CGRectMake(gradientStartingCGPoint.x, gradientStartingCGPoint.y, gradientEndingCGPoint.x - gradientStartingCGPoint.x, gradientEndingCGPoint.y - gradientStartingCGPoint.y)
+                        let clippingPath = UIBezierPath(rect: gradientCGRect)
+                        CGContextSaveGState(context)
+                        clippingPath.addClip()
+                        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, gradientStartingCGPoint.y), CGPointMake(0, gradientEndingCGPoint.y), CGGradientDrawingOptions.DrawsBeforeStartLocation)
+                        CGContextRestoreGState(context)
+                    }
+                    else { // gradient spans 2 days
+                        let firstDayStartingDate = gradientStartDate
+                        let firstDayComponents = NSCalendar.currentCalendar().components([.Year, .Month, .Day, .TimeZone], fromDate: firstDayStartingDate)
+                        let startOfFirstDay = NSCalendar.currentCalendar().dateFromComponents(firstDayComponents)!
+                        let startOfSecondDay = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: startOfFirstDay, options: [])!
+                        let endOfFirstDay = NSCalendar.currentCalendar().dateByAddingUnit(.Second, value: -1, toDate: startOfSecondDay, options: [])!
+                        let secondDayEndingDate = gradientEndDate
+                        
+                        let firstDayStartingCGPoint = CGPointForDate(firstDayStartingDate, offset: -0.5)
+                        let firstDayEndingCGPoint = CGPointForDate(endOfFirstDay, offset: 0.5)
+                        let secondDayStartingCGPoint = CGPointForDate(startOfSecondDay, offset: -0.5)
+                        let secondDayEndingCGPoint = CGPointForDate(secondDayEndingDate, offset: 0.5)
+                        let totalYCGPoints = firstDayStartingCGPoint.y - firstDayEndingCGPoint.y + secondDayStartingCGPoint.y - secondDayEndingCGPoint.y
+                        
+                        let firstDayGradientCGRect = CGRectMake(firstDayStartingCGPoint.x, firstDayStartingCGPoint.y - totalYCGPoints, firstDayEndingCGPoint.x - firstDayStartingCGPoint.x, totalYCGPoints)
+                        let secondDayGradientCGRect = CGRectMake(secondDayStartingCGPoint.x, secondDayEndingCGPoint.y, secondDayEndingCGPoint.x - secondDayStartingCGPoint.x, totalYCGPoints)
+                        
+                        let firstDayClippingPathRect = CGRectMake(firstDayStartingCGPoint.x, firstDayStartingCGPoint.y, firstDayEndingCGPoint.x - firstDayStartingCGPoint.x, firstDayEndingCGPoint.y - firstDayStartingCGPoint.y)
+                        let secondDayClippingPathRect = CGRectMake(secondDayStartingCGPoint.x, secondDayStartingCGPoint.y, secondDayEndingCGPoint.x - secondDayStartingCGPoint.x, secondDayEndingCGPoint.y - secondDayStartingCGPoint.y)
+                        
+                        let firstDayClippingPath = UIBezierPath(rect: firstDayClippingPathRect)
+                        let secondDayClippingPath = UIBezierPath(rect: secondDayClippingPathRect)
+                        
+                        CGContextSaveGState(context)
+                        firstDayClippingPath.addClip()
+                        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, firstDayGradientCGRect.origin.y + totalYCGPoints), CGPointMake(0, firstDayGradientCGRect.origin.y), [])
+                        CGContextRestoreGState(context)
+                        
+                        CGContextSaveGState(context)
+                        secondDayClippingPath.addClip()
+                        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, secondDayGradientCGRect.origin.y + totalYCGPoints), CGPointMake(0, secondDayGradientCGRect.origin.y), [])
+                        CGContextRestoreGState(context)
+                    }
+                }
             }
-            
-            
         }
         
 //        if sleepData != nil {

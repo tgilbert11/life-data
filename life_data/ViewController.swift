@@ -295,19 +295,19 @@ class ViewController: UIViewController {
             print("delete")
             let requestString = "http://\(self.hostname)/cgi-bin/database/deleteLast?username=\(self.username)"
             //println(requestString)
-            let response = try? NSString(contentsOfURL: NSURL(string: requestString)!, encoding: NSUTF8StringEncoding)
+            let _ = try? NSString(contentsOfURL: NSURL(string: requestString)!, encoding: NSUTF8StringEncoding)
             
-            if !(response != nil) {
-                print("nil response")
-            }
-            else {
-                if response! != "command recognized" {
-                    print("failed to delete")
-                }
-                else {
-                    print("delete appears to have succeeded")
-                }
-            }
+//            if !(response != nil) {
+//                print("nil response")
+//            }
+//            else {
+//                if response! != "command recognized" {
+//                    print("failed to delete")
+//                }
+//                else {
+//                    print("delete appears to have succeeded")
+//                }
+//            }
         })
         let cancelAction = UIAlertAction(title: "cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         alertController.addAction(deleteAction)
