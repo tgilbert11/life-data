@@ -53,7 +53,7 @@ class WeekViewController: UIViewController {
         for line in data {
             let splitBySemicolon = line.componentsSeparatedByString(";")
             let category = splitBySemicolon[1].componentsSeparatedByString("category:")[1]
-            if category == "sleep" || category == "drivingTime" || category == "drinks" {
+            if category == "sleep" || category == "drivingTime" || category == "drinks" || category == "meals" {
                 let dateFormatter = NSDateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 let date = dateFormatter.dateFromString(splitBySemicolon[0].componentsSeparatedByString("time:")[1])!
@@ -70,6 +70,9 @@ class WeekViewController: UIViewController {
                     }
                     if category == "drinks" {
                         processedData += [(date: date, category: category, event: splitBySemicolon[2].componentsSeparatedByString("drinkType:")[1])]
+                    }
+                    if category == "meals" {
+                        processedData += [(date: date, category: category, event: splitBySemicolon[2].componentsSeparatedByString("mealType:")[1])]
                     }
                 }
             }

@@ -25,11 +25,14 @@ class WeekChartView: UIView {
     let driveColor = UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 0.8).CGColor
     let gradientHeightInSeconds = 30*60
     
-    let alcoholColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1).CGColor
+    let alcoholColor = UIColor(red: 0.8, green: 0, blue: 0, alpha: 1).CGColor
     let coffeeColor = UIColor(red: 0.48, green: 0.22, blue: 0, alpha: 1).CGColor
     let waterColor = UIColor(red: 0.07, green: 0.41, blue: 0.85, alpha: 1).CGColor
     let otherDrinkColor = UIColor(red: 0.07, green: 0.41, blue: 0.85, alpha: 1).CGColor
-    let lineWidth = CGFloat(1)
+    let drinkLineWidth = CGFloat(1)
+    
+    let mealColor = UIColor(red: 0.77, green: 0.69, blue: 0, alpha: 1).CGColor
+    let mealLineWidth = CGFloat(4)
     
     func createGraphicsObjects() {
         
@@ -239,6 +242,15 @@ class WeekChartView: UIView {
                 lines += [(date: event.date, eventType: event.event)]
             }
         }
+        
+        
+        // Meals
+        //    events: breakfast, brunch, lunch, snack, dinner
+        for event in processedData {
+            if event.category == "drinks" {
+                lines += [(date: event.date, eventType: event.event)]
+            }
+        }
     }
     
     func getIndexOfMostRecentRectangleOfEventType(eventType: String) -> Int? {
@@ -432,21 +444,27 @@ class WeekChartView: UIView {
         }
         
         for line in lines {
-            let lineStartingCGPoint = CGPointForDate(line.date, offset: -0.3)
-            let lineEndingCGPoint = CGPointForDate(line.date, offset: 0.3)
+            let lineStartingCGPoint = CGPointForDate(line.date, offset: -0.35)
+            let lineEndingCGPoint = CGPointForDate(line.date, offset: 0.35)
             switch line.eventType {
             case "alcohol":
                 CGContextSetStrokeColorWithColor(context, alcoholColor)
+                CGContextSetLineWidth(context, drinkLineWidth)
             case "water":
                 CGContextSetStrokeColorWithColor(context, waterColor)
+                CGContextSetLineWidth(context, drinkLineWidth)
             case "coffee":
                 CGContextSetStrokeColorWithColor(context, coffeeColor)
+                CGContextSetLineWidth(context, drinkLineWidth)
             case "otherDrink":
                 CGContextSetStrokeColorWithColor(context, otherDrinkColor)
+                CGContextSetLineWidth(context, drinkLineWidth)
+            case "breakfast", "brunch", "lunch", "snack", "dinner":
+                CGContextSetStrokeColorWithColor(context, mealColor)
+                CGContextSetLineWidth(context, mealLineWidth)
             default:
                 break
             }
-            CGContextSetLineWidth(context, lineWidth)
             CGContextMoveToPoint(context, lineStartingCGPoint.x, lineStartingCGPoint.y)
             CGContextAddLineToPoint(context, lineEndingCGPoint.x, lineEndingCGPoint.y)
             CGContextStrokePath(context)
