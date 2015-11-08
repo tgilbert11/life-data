@@ -14,7 +14,247 @@ class WeekChartView: UIView {
     var sleepData: [(date: NSDate, event: String)]?
     var drivingTimeData: [(date: NSDate, event: String)]?
     
+    var processedData: [(date: NSDate, category: String, event: String)] = []
+    
+    // sleep, snooze, drive
+    // gradient: <0 for known end time, 0 for filled, >0 for known start time
+    var rectangles: [(startDate: NSDate, endDate: NSDate, eventType: String, gradient: Int)] = []
+    
+    let sleepColor = UIColor(red: 0.01, green: 0.2, blue: 0.01, alpha: 0.8).CGColor
+    let snoozeColor = UIColor(red: 0.52, green: 0.06, blue: 0.0, alpha: 0.8).CGColor
+    let drivingColor = UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 0.8).CGColor
+    
+    func createGraphicsObjects() {
+        
+        processedData.sortInPlace { $0.date.compare($1.date) == NSComparisonResult.OrderedAscending }
+        
+        let today = NSDate()
+        let dateComponents = NSCalendar.currentCalendar().components([.Year, .Month, .Day, .TimeZone], fromDate: today)
+        let startOfToday = NSCalendar.currentCalendar().dateFromComponents(dateComponents)!
+        let startOfWeek = NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -6, toDate: startOfToday, options: [])!
+        
+        // Sleep
+        //    states: unknown, sleeping, snoozing, awake
+        //    events: wokeUp, wokeUpFromNap, wentToBed, tookANap, alarmWentOff
+        var state = "unknown"
+        var dateOfLastStateChange = startOfWeek
+        for event in processedData {
+            if event.category == "sleep" {
+                switch event.event {
+                case "wokeUp", "wokeUpFromNap":
+                    switch state {
+                    case "unknown": // woke up from unknown
+                        rectangles += [(startDate: dateOfLastStateChange, endDate: event.date, eventType: "sleep", gradient: -1)]
+                        state = "awake"
+                        dateOfLastStateChange = event.date
+                    case "sleeping": // woke up from sleeping
+                        let indexOfMostRecentSleepRectangle = getIndexOfMostRecentRectangleOfEventType("sleep")
+                        if indexOfMostRecentSleepRectangle != nil {
+                            let mostRecentSleepRectangle = rectangles[indexOfMostRecentSleepRectangle!]
+                            if mostRecentSleepRectangle.gradient > 0 {
+                                rectangles.removeAtIndex(indexOfMostRecentSleepRectangle!)
+                            }
+                        }
+                        rectangles += [(startDate: dateOfLastStateChange, endDate: event.date, eventType: "sleep", gradient: 0)]
+                        state = "awake"
+                        dateOfLastStateChange = event.date
+                    case "snoozing": // woke up from snoozing
+                        let indexOfMostRecentSnoozeRectangle = getIndexOfMostRecentRectangleOfEventType("snooze")
+                        if indexOfMostRecentSnoozeRectangle != nil {
+                            let mostRecentSnoozeRectangle = rectangles[indexOfMostRecentSnoozeRectangle!]
+                            if mostRecentSnoozeRectangle.gradient > 0 {
+                                rectangles.removeAtIndex(indexOfMostRecentSnoozeRectangle!)
+                            }
+                        }
+                        rectangles += [(startDate: dateOfLastStateChange, endDate: event.date, eventType: "snooze", gradient: 0)]
+                        state = "awake"
+                        dateOfLastStateChange = event.date
+                    case "awake": // woke up from awake
+                        rectangles += [(startDate: dateOfLastStateChange, endDate: event.date, eventType: "sleep", gradient: -1)]
+                        state = "awake"
+                        dateOfLastStateChange = event.date
+                    default:
+                        break
+                    }
+                case "wentToBed", "tookANap": // EVENT
+                    switch state {
+                    case "unknown":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "sleep", gradient: 1)]
+                        state = "sleeping"
+                        dateOfLastStateChange = event.date
+                    case "sleeping":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "sleep", gradient: 1)]
+                        state = "sleeping"
+                        dateOfLastStateChange = event.date
+                    case "snoozing":
+                        let indexOfMostRecentSnoozeRectangle = getIndexOfMostRecentRectangleOfEventType("snooze")
+                        if indexOfMostRecentSnoozeRectangle != nil {
+                            let mostRecentSnoozeRectangle = rectangles[indexOfMostRecentSnoozeRectangle!]
+                            if mostRecentSnoozeRectangle.gradient > 0 {
+                                rectangles.removeAtIndex(indexOfMostRecentSnoozeRectangle!)
+                            }
+                        }
+                        rectangles += [(startDate: dateOfLastStateChange, endDate: event.date, eventType: "snooze", gradient: 0)]
+                        state = "sleeping"
+                        dateOfLastStateChange = event.date
+                    case "awake":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "sleep", gradient: 1)]
+                        state = "sleeping"
+                        dateOfLastStateChange = event.date
+                    default:
+                        break
+                    }
+                case "alarmWentOff":
+                    switch state {
+                    case "unknown":
+                        rectangles += [(startDate: dateOfLastStateChange, endDate: event.date, eventType: "sleep", gradient: -1)]
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "snooze", gradient: 1)]
+                        state = "sleeping"
+                        dateOfLastStateChange = event.date
+                    case "sleeping":
+                        let indexOfMostRecentSleepRectangle = getIndexOfMostRecentRectangleOfEventType("sleep")
+                        if indexOfMostRecentSleepRectangle != nil {
+                            let mostRecentSleepRectangle = rectangles[indexOfMostRecentSleepRectangle!]
+                            if mostRecentSleepRectangle.gradient > 0 {
+                                rectangles.removeAtIndex(indexOfMostRecentSleepRectangle!)
+                            }
+                        }
+                        rectangles += [(startDate: dateOfLastStateChange, endDate: event.date, eventType: "sleep", gradient: 0)]
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "snooze", gradient: 1)]
+                        state = "snoozing"
+                        dateOfLastStateChange = event.date
+                    case "snoozing":
+                        let indexOfMostRecentSnoozeRectangle = getIndexOfMostRecentRectangleOfEventType("snooze")
+                        if indexOfMostRecentSnoozeRectangle != nil {
+                            let mostRecentSnoozeRectangle = rectangles[indexOfMostRecentSnoozeRectangle!]
+                            if mostRecentSnoozeRectangle.gradient > 0 {
+                                rectangles.removeAtIndex(indexOfMostRecentSnoozeRectangle!)
+                            }
+                        }
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "snooze", gradient: 1)]
+                        state = "snoozing"
+                        dateOfLastStateChange = event.date
+                    case "awake":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "snooze", gradient: 1)]
+                        state = "snoozing"
+                        dateOfLastStateChange = event.date
+                    default:
+                        break
+                    }
+                default:
+                    break
+                }
+            }
+            
+            for rectangle in rectangles {
+                if rectangle.eventType == "sleep" || rectangle.eventType == "snooze" {
+                    let dateFormatter = NSDateFormatter()
+                    dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
+                    //print("event: \(rectangle.eventType), startTime: \(dateFormatter.stringFromDate(rectangle.startDate)), endTime: \(dateFormatter.stringFromDate(rectangle.endDate)), gradient: \(rectangle.gradient)")
+                }
+                //print("")
+            }
+        }
+        
+        for rectangle in rectangles {
+            if rectangle.eventType == "sleep" || rectangle.eventType == "snooze" {
+                let dateFormatter = NSDateFormatter()
+                dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
+                //print("event: \(rectangle.eventType), startTime: \(dateFormatter.stringFromDate(rectangle.startDate)), endTime: \(dateFormatter.stringFromDate(rectangle.endDate)), gradient: \(rectangle.gradient)")
+            }
+        }
+        
+        
+        // Driving Time
+        //    states: unknown, driving, notDriving
+        //    events: leftForWork, arrivedAtWork, leftForHome, arrivedAtHome
+        state = "unknown"
+        dateOfLastStateChange = startOfWeek
+        for event in processedData {
+            if event.category == "drivingTime" {
+                switch event.event {
+                case "leftForWork", "leftForHome":
+                    switch state {
+                    case "unknown":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "drive", gradient: 1)]
+                        state = "driving"
+                        dateOfLastStateChange = event.date
+                    case "driving":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "drive", gradient: 1)]
+                        state = "driving"
+                        dateOfLastStateChange = event.date
+                    case "notDriving":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "drive", gradient: 1)]
+                        state = "driving"
+                        dateOfLastStateChange = event.date
+                    default:
+                        break
+                    }
+                case "arrivedAtWork", "arrivedAtHome":
+                    switch state {
+                    case "unknown":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "drive", gradient: -1)]
+                        state = "notDriving"
+                        dateOfLastStateChange = event.date
+                    case "driving":
+                        let indexOfMostRecentSnoozeRectangle = getIndexOfMostRecentRectangleOfEventType("drive")
+                        if indexOfMostRecentSnoozeRectangle != nil {
+                            let mostRecentSnoozeRectangle = rectangles[indexOfMostRecentSnoozeRectangle!]
+                            if mostRecentSnoozeRectangle.gradient > 0 {
+                                rectangles.removeAtIndex(indexOfMostRecentSnoozeRectangle!)
+                            }
+                        }
+                        rectangles += [(startDate: dateOfLastStateChange, endDate: event.date, eventType: "drive", gradient: 0)]
+                        state = "notDriving"
+                        dateOfLastStateChange = event.date
+                    case "notDriving":
+                        rectangles += [(startDate: event.date, endDate: event.date, eventType: "drive", gradient: -1)]
+                        state = "notDriving"
+                        dateOfLastStateChange = event.date
+                    default:
+                        break
+                    }
+                default:
+                    break
+                }
+                
+                for rectangle in rectangles {
+                    if rectangle.eventType == "drive" {
+                        let dateFormatter = NSDateFormatter()
+                        dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
+                        //print("event: \(rectangle.eventType), startTime: \(dateFormatter.stringFromDate(rectangle.startDate)), endTime: \(dateFormatter.stringFromDate(rectangle.endDate)), gradient: \(rectangle.gradient)")
+                    }
+                }
+                //print("")
+                
+            }
+        }
+    }
+    
+    func getIndexOfMostRecentRectangleOfEventType(eventType: String) -> Int? {
+        var indexOfMostRecentRectangle: Int?
+        var dateOfMostRecentRectangle: NSDate?
+        for var index = 0; index < rectangles.count; index++ {
+            let thisRectangle = rectangles[index]
+            if thisRectangle.eventType == eventType {
+                if dateOfMostRecentRectangle == nil {
+                    indexOfMostRecentRectangle = index
+                    dateOfMostRecentRectangle = thisRectangle.startDate
+                }
+                else {
+                    if thisRectangle.startDate.compare(dateOfMostRecentRectangle!) == NSComparisonResult.OrderedDescending {
+                        indexOfMostRecentRectangle = index
+                        dateOfMostRecentRectangle = thisRectangle.startDate
+                    }
+                }
+            }
+        }
+        return indexOfMostRecentRectangle
+    }
+
     override func drawRect(rect: CGRect) {
+        createGraphicsObjects()
+    
         let context = UIGraphicsGetCurrentContext()
         
         CGContextSetRGBStrokeColor(context, 0.75, 0.75, 0.75, 1)
@@ -35,8 +275,6 @@ class WeekChartView: UIView {
         }
         
         if sleepData != nil {
-            let sleepColor = UIColor(red: 0.01, green: 0.2, blue: 0.01, alpha: 0.8).CGColor
-            let snoozeColor = UIColor(red: 0.52, green: 0.06, blue: 0.0, alpha: 0.8).CGColor
             
             sleepData!.sortInPlace { $0.date.compare($1.date) == NSComparisonResult.OrderedAscending }
 
@@ -135,14 +373,13 @@ class WeekChartView: UIView {
         }
         
         if drivingTimeData != nil {
-            let drivingColor = UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 0.8).CGColor
             
             drivingTimeData!.sortInPlace { $0.date.compare($1.date) == NSComparisonResult.OrderedAscending }
 
             let dateFormatter = NSDateFormatter()
             dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
             for (date, event) in drivingTimeData! {
-                print("date: \(dateFormatter.stringFromDate(date)), event: \(event)")
+                //print("date: \(dateFormatter.stringFromDate(date)), event: \(event)")
             }
             dateFormatter.dateFormat = "e"
             
