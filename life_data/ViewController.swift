@@ -13,6 +13,9 @@ class ViewController: UIViewController {
     @IBOutlet var theTableView: UITableView?
     @IBOutlet var timeSlider: UISlider?
     @IBOutlet var timeLabel: UILabel?
+    @IBOutlet var activityIndicatorView: UIActivityIndicatorView?
+    @IBOutlet var maskView: UIView?
+    @IBOutlet var errorStackView: UIStackView?
     
     let username = "taylorg"
     
@@ -25,10 +28,36 @@ class ViewController: UIViewController {
     // Int -> categories (-1 is categoryName, numbers = dataTypes) -> dataTypes (-1 is dataTypeName, numbers = dataItems) -> dataItems (number is dataItemName)
     var categoryByIndex = [Int: Dictionary<Int, Dictionary<Int, String>>]()
     
+    var APIString: String?
     var request: Request?
     var hostname = ""
     
-    func getData() {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "kickOffNewRequest", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        // Do any additional setup after loading the view, typically from a nib.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        prepareStaticUI()
+        kickOffNewRequest()
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func prepareStaticUI() {
+        self.activityIndicatorView!.hidesWhenStopped = true
+        self.errorStackView!.hidden = true
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
+        timeSlider!.setValue(1, animated: true)
+        updateTimeLabelWithDate(nil)
+    }
+    
+    func parseData() {
         var categoryName = ""
         var dataTypeName = ""
         var dataItemName = ""
@@ -36,118 +65,170 @@ class ViewController: UIViewController {
         var dataTypeIndex = -1
         var dataItemIndex = -1
         
-        var APIString = ""
+        if APIString != nil {
+            let splitByLines = APIString!.componentsSeparatedByString("\n")
+            //let splitByLines: [String] = []
+            
+            
+            for line in splitByLines {
+                if line.substringToIndex(line.startIndex.advancedBy(3)) == ">>>" {
+                    //println("category")
+                    let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(3))
+                    let splitByCommas = removedArrows.componentsSeparatedByString(",")
+                    let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    categoryName = shortName
+                    let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    //println("\(shortName) \(humanName)")
+                    categoryDictionary[categoryName] = [String: Dictionary<String,String>]()
+                    categoryDictionary[categoryName]!["descriptor"] = [String: String]()
+                    categoryDictionary[categoryName]!["descriptor"]!["descriptor"] = humanName
+                    
+                    categoryIndex++
+                    dataTypeIndex = -1
+                    dataItemIndex = -1
+                    categoryByIndex[categoryIndex] = [Int: Dictionary<Int, String>]()
+                    categoryByIndex[categoryIndex]![-1] = [Int: String]()
+                    categoryByIndex[categoryIndex]![-1]![-1] = categoryName
+                    
+                    //let retrievedName = categoryDictionary[categoryName]!["descriptor"]!["descriptor"]!
+                    //println("\(retrievedName)")
+                }
+                else if line.substringToIndex(line.startIndex.advancedBy(2)) == ">>" {
+                    //println("dataType")
+                    let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(2))
+                    let splitByCommas = removedArrows.componentsSeparatedByString(",")
+                    let fullDataType = splitByCommas[0].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    let shortDataType = fullDataType.substringToIndex(fullDataType.startIndex.advancedBy(1))
+                    let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    dataTypeName = shortName
+                    let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    //println("\(shortName) \(humanName)")
+                    categoryDictionary[categoryName]![dataTypeName] = [String: String]()
+                    categoryDictionary[categoryName]![dataTypeName]!["descriptor"] = humanName
+                    categoryDictionary[categoryName]![dataTypeName]!["dataType"] = shortDataType
+                    
+                    dataTypeIndex++
+                    dataItemIndex = -1
+                    categoryByIndex[categoryIndex]![dataTypeIndex] = [Int: String]()
+                    categoryByIndex[categoryIndex]![dataTypeIndex]![-1] = shortName
+                    
+                    //let retrievedName = categoryDictionary[categoryName]![dataTypeName]!["descriptor"]!
+                    //let retrievedType = categoryDictionary[categoryName]![dataTypeName]!["dataType"]!
+                    //println("    \(retrievedName), \(retrievedType)")
+                    
+                }
+                else if line.substringToIndex(line.startIndex.advancedBy(1)) == ">" {
+                    //println("dataItem")
+                    let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(1))
+                    let splitByCommas = removedArrows.componentsSeparatedByString(",")
+                    let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    dataItemName = shortName
+                    let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    //println("\(shortName) \(humanName)")
+                    categoryDictionary[categoryName]![dataTypeName]![dataItemName] = humanName
+                    
+                    dataItemIndex++
+                    categoryByIndex[categoryIndex]![dataTypeIndex]![dataItemIndex] = shortName
+                    //let retrievedName = categoryDictionary[categoryName]![dataTypeName]![dataItemName]!
+                    //println("        \(retrievedName)")
+                }
+            }
+        }
+    }
+
+    
+    func kickOffNewRequest() {
+    
+        clearTableView()
+        startActivityIndicator()
+        
         let URLPath = "http://taylorg.no-ip.org/cgi-bin/database/API"
         let URL = NSURL(string: URLPath)
-        let awayString = try? String(contentsOfURL: URL!, encoding: NSUTF8StringEncoding)
-        //APIString = awayString!
-        //println(awayString)
-        if awayString == nil {
-            let URLPathHome = "http://192.168.1.110/cgi-bin/database/API"
-            let URLHome = NSURL(string: URLPathHome)
-            let homeString = try? String(contentsOfURL: URLHome!, encoding: NSUTF8StringEncoding)
-            //println(homeString)
-            APIString = homeString!
-            hostname = "192.168.1.110"
-        }
-        else {
-            APIString = awayString!
-            hostname = "taylorg.no-ip.org"
-        }
+        let urlRequest = NSURLRequest(URL: URL!)
+        let urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+        urlSession.dataTaskWithRequest(urlRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
+            print("complete")
+        
+            if data != nil {
+                let dataString = String(data: data!, encoding:NSUTF8StringEncoding)!
+                print(dataString)
+                self.APIString = dataString
+                self.hostname = "taylorg.no-ip.org"
+                self.parseData()
+                self.stopActivityIndicatorAndClear()
+                //print("categoryDictionary.count: \(self.categoryDictionary.count)")
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    self.theTableView!.reloadData()
+                })
+            }
+            else {
+                print("data was nil")
+                self.stopActivityIndicatorWithError()
+            }
+            
+        }).resume()
+        
+        
+//        let awayString = try? String(contentsOfURL: URL!, encoding: NSUTF8StringEncoding)
+//        //APIString = awayString!
+//        //println(awayString)
+//        if awayString == nil {
+//            let URLPathHome = "http://192.168.1.110/cgi-bin/database/API"
+//            let URLHome = NSURL(string: URLPathHome)
+//            let homeString = try? String(contentsOfURL: URLHome!, encoding: NSUTF8StringEncoding)
+//            //println(homeString)
+//            APIString = homeString!
+//            hostname = "192.168.1.110"
+//        }
+//        else {
+//            APIString = awayString!
+//            hostname = "taylorg.no-ip.org"
+//        }
         
         //println(APIString)
         
         //let path = "/Users/taylorg/Desktop/life_data/life_data/mysqlDynamic API.txt"
         //let rawText = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: nil)!
-        let splitByLines = APIString.componentsSeparatedByString("\n")
-        for line in splitByLines {
-            if line.substringToIndex(line.startIndex.advancedBy(3)) == ">>>" {
-                //println("category")
-                let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(3))
-                let splitByCommas = removedArrows.componentsSeparatedByString(",")
-                let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                categoryName = shortName
-                let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                //println("\(shortName) \(humanName)")
-                categoryDictionary[categoryName] = [String: Dictionary<String,String>]()
-                categoryDictionary[categoryName]!["descriptor"] = [String: String]()
-                categoryDictionary[categoryName]!["descriptor"]!["descriptor"] = humanName
-                
-                categoryIndex++
-                dataTypeIndex = -1
-                dataItemIndex = -1
-                categoryByIndex[categoryIndex] = [Int: Dictionary<Int, String>]()
-                categoryByIndex[categoryIndex]![-1] = [Int: String]()
-                categoryByIndex[categoryIndex]![-1]![-1] = categoryName
-                
-                //let retrievedName = categoryDictionary[categoryName]!["descriptor"]!["descriptor"]!
-                //println("\(retrievedName)")
-            }
-            else if line.substringToIndex(line.startIndex.advancedBy(2)) == ">>" {
-                //println("dataType")
-                let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(2))
-                let splitByCommas = removedArrows.componentsSeparatedByString(",")
-                let fullDataType = splitByCommas[0].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                let shortDataType = fullDataType.substringToIndex(fullDataType.startIndex.advancedBy(1))
-                let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                dataTypeName = shortName
-                let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                //println("\(shortName) \(humanName)")
-                categoryDictionary[categoryName]![dataTypeName] = [String: String]()
-                categoryDictionary[categoryName]![dataTypeName]!["descriptor"] = humanName
-                categoryDictionary[categoryName]![dataTypeName]!["dataType"] = shortDataType
-                
-                dataTypeIndex++
-                dataItemIndex = -1
-                categoryByIndex[categoryIndex]![dataTypeIndex] = [Int: String]()
-                categoryByIndex[categoryIndex]![dataTypeIndex]![-1] = shortName
-                
-                //let retrievedName = categoryDictionary[categoryName]![dataTypeName]!["descriptor"]!
-                //let retrievedType = categoryDictionary[categoryName]![dataTypeName]!["dataType"]!
-                //println("    \(retrievedName), \(retrievedType)")
-
-            }
-            else if line.substringToIndex(line.startIndex.advancedBy(1)) == ">" {
-                //println("dataItem")
-                let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(1))
-                let splitByCommas = removedArrows.componentsSeparatedByString(",")
-                let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                dataItemName = shortName
-                let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                //println("\(shortName) \(humanName)")
-                categoryDictionary[categoryName]![dataTypeName]![dataItemName] = humanName
-                
-                dataItemIndex++
-                categoryByIndex[categoryIndex]![dataTypeIndex]![dataItemIndex] = shortName
-                                //let retrievedName = categoryDictionary[categoryName]![dataTypeName]![dataItemName]!
-                //println("        \(retrievedName)")
-            }
-        }
+    }
+    
+    @IBAction func didClickRetry() {
+        kickOffNewRequest()
+    }
+    
+    func startActivityIndicator() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.startAnimating()
+            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
+            self.errorStackView!.hidden = true
+        })
+        print("activity indicator started")
+    }
+    
+    func stopActivityIndicatorAndClear() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.stopAnimating()
+            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
+        })
+        print("activity indicator stopped and cleared")
+    }
+    
+    func stopActivityIndicatorWithError() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.stopAnimating()
+            self.errorStackView!.hidden = false
+        })
+        print("activity indicator stopped with error")
+    }
+    
+    func clearTableView() {
+        self.APIString = nil
+        self.categoryDictionary.removeAll()
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.theTableView!.reloadData()
+        })
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshLayout", name: UIApplicationDidBecomeActiveNotification, object: nil)
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
-    
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        refreshLayout()
-    }
-    
-    func refreshLayout() {
-        getData()
-        timeSlider!.setValue(1, animated: true)
-        updateTimeLabelWithDate(nil)
-    }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
@@ -163,6 +244,9 @@ class ViewController: UIViewController {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
+    
+    
+    
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         //let cell = tableView.cellForRowAtIndexPath(indexPath)
