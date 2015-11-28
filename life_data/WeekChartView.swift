@@ -44,7 +44,6 @@ class WeekChartView: UIView {
     
     
     func createGraphicsObjects() {
-        
         processedData.sortInPlace { $0.date.compare($1.date) == NSComparisonResult.OrderedAscending }
         
         let today = NSDate()
@@ -284,8 +283,10 @@ class WeekChartView: UIView {
     }
     
     override func drawRect(rect: CGRect) {
-        print("drawRect")
-        createGraphicsObjects()
+        //print("drawRect")
+        if processedData.count > 0 && rectangles.count == 0 && lines.count == 0 {
+            createGraphicsObjects()
+        }
         
         let context = UIGraphicsGetCurrentContext()
         

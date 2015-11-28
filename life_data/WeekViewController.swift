@@ -52,7 +52,7 @@ class WeekViewController: UIViewController {
         let urlRequest = NSURLRequest(URL: URL!)
         let urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
         urlSession.dataTaskWithRequest(urlRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
-            print("complete")
+            //print("complete")
             
             if data != nil {
                 let responseString = String(data: data!, encoding: NSUTF8StringEncoding)
@@ -74,7 +74,7 @@ class WeekViewController: UIViewController {
                 })
             }
             else {
-                print("data was nil")
+                //print("data was nil")
                 self.stopActivityIndicatorWithError()
             }
         }).resume()
