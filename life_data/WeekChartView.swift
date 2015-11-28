@@ -12,6 +12,7 @@ import UIKit
 class WeekChartView: UIView {
     
     var processedData: [(date: NSDate, category: String, event: String)] = []
+    var initializationComplete: Bool = false
     
     // sleep, snooze, drive
     // gradient: <0 for known end time, 0 for filled, >0 for known start time
@@ -40,6 +41,8 @@ class WeekChartView: UIView {
     let lunchOffset = CGFloat(0.35)
     let snackOffset = CGFloat(0.15)
     let dinnerOffset = CGFloat(0.375)
+    
+    
     
     func createGraphicsObjects() {
         
@@ -280,9 +283,12 @@ class WeekChartView: UIView {
         }
         return indexOfMostRecentRectangle
     }
-
+    
     override func drawRect(rect: CGRect) {
-        createGraphicsObjects()
+        if !initializationComplete {
+            createGraphicsObjects()
+            initializationComplete = true
+        }
         
         let context = UIGraphicsGetCurrentContext()
         
