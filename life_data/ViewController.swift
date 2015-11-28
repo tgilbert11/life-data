@@ -147,11 +147,11 @@ class ViewController: UIViewController {
         let urlRequest = NSURLRequest(URL: URL!)
         let urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
         urlSession.dataTaskWithRequest(urlRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
-            print("complete")
+            //print("complete")
         
             if data != nil {
                 let dataString = String(data: data!, encoding:NSUTF8StringEncoding)!
-                print(dataString)
+                //print(dataString)
                 self.APIString = dataString
                 self.hostname = "taylorg.no-ip.org"
                 self.parseData()
@@ -162,7 +162,7 @@ class ViewController: UIViewController {
                 })
             }
             else {
-                print("data was nil")
+                //print("data was nil")
                 self.stopActivityIndicatorWithError()
             }
             
@@ -201,7 +201,7 @@ class ViewController: UIViewController {
             self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
             self.errorStackView!.hidden = true
         })
-        print("activity indicator started")
+        //print("activity indicator started")
     }
     
     func stopActivityIndicatorAndClear() {
@@ -209,7 +209,7 @@ class ViewController: UIViewController {
             self.activityIndicatorView!.stopAnimating()
             self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
         })
-        print("activity indicator stopped and cleared")
+        //print("activity indicator stopped and cleared")
     }
     
     func stopActivityIndicatorWithError() {
@@ -217,7 +217,7 @@ class ViewController: UIViewController {
             self.activityIndicatorView!.stopAnimating()
             self.errorStackView!.hidden = false
         })
-        print("activity indicator stopped with error")
+        //print("activity indicator stopped with error")
     }
     
     func clearTableView() {
