@@ -12,8 +12,7 @@ import UIKit
 class WeekChartView: UIView {
     
     var processedData: [(date: NSDate, category: String, event: String)] = []
-    var initializationComplete: Bool = false
-    
+
     // sleep, snooze, drive
     // gradient: <0 for known end time, 0 for filled, >0 for known start time
     var rectangles: [(startDate: NSDate, endDate: NSDate, eventType: String, gradient: Int)] = []
@@ -285,10 +284,8 @@ class WeekChartView: UIView {
     }
     
     override func drawRect(rect: CGRect) {
-        if !initializationComplete {
-            createGraphicsObjects()
-            initializationComplete = true
-        }
+        print("drawRect")
+        createGraphicsObjects()
         
         let context = UIGraphicsGetCurrentContext()
         
