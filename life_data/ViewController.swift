@@ -139,60 +139,34 @@ class ViewController: UIViewController {
     
     func kickOffNewRequest() {
     
-        clearTableView()
+        clearDynamicData()
         startActivityIndicator()
-        
-        let URLPath = "http://taylorg.no-ip.org/cgi-bin/database/API"
-        let URL = NSURL(string: URLPath)
-        let urlRequest = NSURLRequest(URL: URL!)
-        let urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-        urlSession.dataTaskWithRequest(urlRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
-            //print("complete")
-        
+    
+        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: "http://taylorg.no-ip.org/cgi-bin/database/API")!), completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
+
             if data != nil {
-                let dataString = String(data: data!, encoding:NSUTF8StringEncoding)!
-                //print(dataString)
-                self.APIString = dataString
-                self.hostname = "taylorg.no-ip.org"
-                self.parseData()
+                self.APIRequestSucceededWithAPIString(String(data: data!, encoding:NSUTF8StringEncoding)!)
                 self.stopActivityIndicatorAndClear()
-                //print("categoryDictionary.count: \(self.categoryDictionary.count)")
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.theTableView!.reloadData()
-                })
             }
             else {
-                //print("data was nil")
                 self.stopActivityIndicatorWithError()
             }
             
         }).resume()
-        
-        
-//        let awayString = try? String(contentsOfURL: URL!, encoding: NSUTF8StringEncoding)
-//        //APIString = awayString!
-//        //println(awayString)
-//        if awayString == nil {
-//            let URLPathHome = "http://192.168.1.110/cgi-bin/database/API"
-//            let URLHome = NSURL(string: URLPathHome)
-//            let homeString = try? String(contentsOfURL: URLHome!, encoding: NSUTF8StringEncoding)
-//            //println(homeString)
-//            APIString = homeString!
-//            hostname = "192.168.1.110"
-//        }
-//        else {
-//            APIString = awayString!
-//            hostname = "taylorg.no-ip.org"
-//        }
-        
-        //println(APIString)
-        
-        //let path = "/Users/taylorg/Desktop/life_data/life_data/mysqlDynamic API.txt"
-        //let rawText = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: nil)!
     }
     
     @IBAction func didClickRetry() {
         kickOffNewRequest()
+    }
+    
+    func APIRequestSucceededWithAPIString(apiString: String) {
+        self.APIString = apiString
+        self.hostname = "taylorg.no-ip.org"
+        self.parseData()
+        self.stopActivityIndicatorAndClear()
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.theTableView!.reloadData()
+        })
     }
     
     func startActivityIndicator() {
@@ -220,12 +194,13 @@ class ViewController: UIViewController {
         //print("activity indicator stopped with error")
     }
     
-    func clearTableView() {
+    func clearDynamicData() {
         self.APIString = nil
         self.categoryDictionary.removeAll()
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.theTableView!.reloadData()
         })
+        self.updateTimeLabelWithDate(nil)
     }
 
 

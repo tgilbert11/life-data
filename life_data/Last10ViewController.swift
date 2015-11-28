@@ -11,27 +11,64 @@ import UIKit
 
 class Last10ViewController: UIViewController {
     @IBOutlet var textField: UITextView?
+    @IBOutlet var errorStackView: UIStackView?
+    @IBOutlet var activityIndicatorView: UIActivityIndicatorView?
+    @IBOutlet var maskView: UIView?
     
     var username: String?
     var hostname: String?
+    var text: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.textField!.selectable = true
-        self.textField!.text = getTextFromServer()
-        self.textField!.selectable = false
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        prepareStaticUI()
+        kickOffNewRequest()
     }
     
     override func viewDidLayoutSubviews() {
         self.textField!.setContentOffset(CGPointMake(0, 0), animated: false)
     }
     
-    func getTextFromServer() -> String {
+    func prepareStaticUI() {
+        self.textField!.selectable = true
+        self.textField!.selectable = false
+        self.activityIndicatorView!.hidesWhenStopped = true
+        self.errorStackView!.hidden = true
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
+    }
+    
+    func clearDynamicData() {
+        self.textField!.text = ""
+    }
+    
+    @IBAction func didTapRetry() {
+        kickOffNewRequest()
+    }
+    
+    func kickOffNewRequest() {
+        
+        clearDynamicData()
+        startActivityIndicator()
+    
         let urlString = "http://\(hostname!)/cgi-bin/database/readLast10?username=\(username!)"
-        //println(requestString)
-        let requestString = try? NSString(contentsOfURL: NSURL(string: urlString)!, encoding: NSUTF8StringEncoding)
-        //println(returnString!)
-        let splitByBreak = requestString!.componentsSeparatedByString("<br>")
+        
+        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: urlString)!)) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
+            
+            if data != nil {
+                self.requestSucceededWithData(String(data: data!, encoding: NSUTF8StringEncoding)!)
+            }
+            else {
+                self.stopActivityIndicatorWithError()
+            }
+            
+        }.resume()
+    }
+    
+    func requestSucceededWithData(data: String) {
+        let splitByBreak = data.componentsSeparatedByString("<br>")
         var returnString = ""
         for line in splitByBreak {
             let splitBySemicolon = line.componentsSeparatedByString(";")
@@ -46,7 +83,34 @@ class Last10ViewController: UIViewController {
                 }
             }
         }
-        return returnString
+        self.stopActivityIndicatorAndClear()
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.textField!.text = returnString
+        })
     }
+    
+    func startActivityIndicator() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.startAnimating()
+            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
+            self.errorStackView!.hidden = true
+        })
+    }
+    
+    func stopActivityIndicatorAndClear() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.stopAnimating()
+            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
+        })
+    }
+    
+    func stopActivityIndicatorWithError() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.stopAnimating()
+            self.errorStackView!.hidden = false
+        })
+    }
+    
+
     
 }

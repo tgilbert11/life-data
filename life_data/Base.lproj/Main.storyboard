@@ -513,16 +513,56 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ye-PP-f0L">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="t4k-t2-FmE">
+                                        <rect key="frame" x="195" y="243" width="210.5" height="50.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="could not connect to server" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="17q-jU-R8P">
+                                                <rect key="frame" x="0.0" y="0.0" width="210.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TId-KI-rwg">
+                                                <rect key="frame" x="0.0" y="20" width="210.5" height="30"/>
+                                                <state key="normal" title="retry"/>
+                                                <connections>
+                                                    <action selector="didTapRetry" destination="Q5R-gK-8p6" eventType="touchUpInside" id="Cv8-tm-ODT"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="pdL-6R-avY">
+                                        <rect key="frame" x="290" y="258" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="0.25" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="t4k-t2-FmE" firstAttribute="centerY" secondItem="8Ye-PP-f0L" secondAttribute="centerY" id="5JH-7q-GkT"/>
+                                    <constraint firstItem="pdL-6R-avY" firstAttribute="centerX" secondItem="8Ye-PP-f0L" secondAttribute="centerX" id="pmx-an-W2S"/>
+                                    <constraint firstItem="pdL-6R-avY" firstAttribute="centerY" secondItem="8Ye-PP-f0L" secondAttribute="centerY" id="sC2-Bq-ILY"/>
+                                    <constraint firstItem="t4k-t2-FmE" firstAttribute="centerX" secondItem="8Ye-PP-f0L" secondAttribute="centerX" id="x1x-UA-pj2"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="8Ye-PP-f0L" firstAttribute="top" secondItem="m6f-TG-8fv" secondAttribute="bottom" id="0Is-wt-pyJ"/>
+                            <constraint firstItem="8Ye-PP-f0L" firstAttribute="leading" secondItem="tIF-b4-PdR" secondAttribute="leadingMargin" constant="-20" id="UeS-J8-lEX"/>
                             <constraint firstAttribute="trailingMargin" secondItem="piI-kb-tho" secondAttribute="trailing" id="b14-mW-fnl"/>
                             <constraint firstItem="piI-kb-tho" firstAttribute="leading" secondItem="tIF-b4-PdR" secondAttribute="leadingMargin" id="nLi-Uc-oTj"/>
                             <constraint firstItem="piI-kb-tho" firstAttribute="top" secondItem="m6f-TG-8fv" secondAttribute="bottom" constant="8" id="vgX-4a-oEs"/>
                             <constraint firstItem="8MN-m0-u3d" firstAttribute="top" secondItem="piI-kb-tho" secondAttribute="bottom" constant="20" id="vhf-P8-7Pd"/>
+                            <constraint firstItem="8MN-m0-u3d" firstAttribute="top" secondItem="8Ye-PP-f0L" secondAttribute="bottom" id="wIF-Of-DU1"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="8Ye-PP-f0L" secondAttribute="trailing" constant="-20" id="xKB-7N-bSg"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="pdL-6R-avY" id="9bC-9G-WaL"/>
+                        <outlet property="errorStackView" destination="t4k-t2-FmE" id="cVK-77-uWG"/>
+                        <outlet property="maskView" destination="8Ye-PP-f0L" id="wJj-37-tRQ"/>
                         <outlet property="textField" destination="piI-kb-tho" id="bou-zP-fHa"/>
                     </connections>
                 </viewController>

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B5236B5D1BC3420900FD76F7 /* WeekViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5236B5C1BC3420900FD76F7 /* WeekViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		B5236B5D1BC3420900FD76F7 /* WeekViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5236B5C1BC3420900FD76F7 /* WeekViewController.swift */; };
 		B52780C71B7FC52500DDCB2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52780C61B7FC52500DDCB2E /* AppDelegate.swift */; };
 		B52780C91B7FC52500DDCB2E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52780C81B7FC52500DDCB2E /* ViewController.swift */; };
 		B52780CC1B7FC52500DDCB2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B52780CA1B7FC52500DDCB2E /* Main.storyboard */; };
@@ -20,11 +20,11 @@
 		B55033331B80267000F1365C /* NumericViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033321B80267000F1365C /* NumericViewController.swift */; };
 		B55033351B80270A00F1365C /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033341B80270A00F1365C /* TextViewController.swift */; };
 		B55033371B8035A200F1365C /* ModifierViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033361B8035A200F1365C /* ModifierViewController.swift */; };
-		B5A3018D1BAF895B0010449F /* Last10ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A3018C1BAF895B0010449F /* Last10ViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		B5A3018D1BAF895B0010449F /* Last10ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A3018C1BAF895B0010449F /* Last10ViewController.swift */; };
 		B5B278DA1B897E6700C90B6C /* ReadDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B278D91B897E6700C90B6C /* ReadDataViewController.swift */; };
 		B5B278DC1B898A1E00C90B6C /* WeightViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B278DB1B898A1E00C90B6C /* WeightViewController.swift */; };
 		B5B278DE1B89A68B00C90B6C /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B278DD1B89A68B00C90B6C /* GraphView.swift */; };
-		B5B86AA71BD4AA1C00B0F9BD /* WeekChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B86AA61BD4AA1C00B0F9BD /* WeekChartView.swift */; settings = {ASSET_TAGS = (); }; };
+		B5B86AA71BD4AA1C00B0F9BD /* WeekChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B86AA61BD4AA1C00B0F9BD /* WeekChartView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */

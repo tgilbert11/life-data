@@ -35,96 +35,50 @@ class WeekViewController: UIViewController {
     }
     
     func kickOffNewRequest() {
-        self.weekChartView!.processedData.removeAll()
-        self.data.removeAll()
-        startActivityIndicator()
     
+        self.clearDynamicData()
+        startActivityIndicator()
     
         let date = NSDate()
         let eightDaysAgo = date.dateByAddingTimeInterval(-7*24*60*60)
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let fromTime = dateFormatter.stringFromDate(eightDaysAgo)
-        //print(fromTime)
+        let URLString = "http://\(hostname!)/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
         
-        let urlString = "http://\(hostname!)/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
-        let URL = NSURL(string: urlString)
-        let urlRequest = NSURLRequest(URL: URL!)
-        let urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-        urlSession.dataTaskWithRequest(urlRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
-            //print("complete")
-            
+        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: URLString)!), completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
+
             if data != nil {
-                let responseString = String(data: data!, encoding: NSUTF8StringEncoding)
-                let splitByBreak = responseString!.componentsSeparatedByString("<br>")
-                for line in splitByBreak {
-                    //print(line)
-                    //print(line.characters.count)
-                    if line.characters.count > 0 {
-                        self.data += [line]
-                    }
-                    else {
-                        //print("skipped one in data read")
-                    }
-                }
-                self.weekChartView!.processedData += self.createProcessedDataFromRaw()
+                self.dataRequestCompletedWithData(String(data: data!, encoding: NSUTF8StringEncoding)!)
                 self.stopActivityIndicatorAndClear()
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.weekChartView!.setNeedsDisplay()
-                })
             }
             else {
-                //print("data was nil")
                 self.stopActivityIndicatorWithError()
             }
+            
         }).resume()
         
-//        
-//        //print(urlString)
-//        let requestString = try? NSString(contentsOfURL: NSURL(string: urlString)!, encoding: NSUTF8StringEncoding)
-//        //print(requestString!)
-//        let splitByBreak = requestString!.componentsSeparatedByString("<br>")
-//        for line in splitByBreak {
-//            //print(line)
-//            //print(line.characters.count)
-//            if line.characters.count > 0 {
-//                data += [line]
-//            }
-//            else {
-//                //print("skipped one in data read")
-//            }
-//        }
-        //data += splitByBreak
-        
-//        let URLPath = "http://taylorg.no-ip.org/cgi-bin/database/API"
-//        let URL = NSURL(string: URLPath)
-//        let urlRequest = NSURLRequest(URL: URL!)
-//        let urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-//        urlSession.dataTaskWithRequest(urlRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
-//            //print("complete")
-//        
-//            if data != nil {
-//                let dataString = String(data: data!, encoding:NSUTF8StringEncoding)!
-//                //print(dataString)
-//                self.APIString = dataString
-//                self.hostname = "taylorg.no-ip.org"
-//                self.parseData()
-//                self.stopActivityIndicatorAndClear()
-//                //print("categoryDictionary.count: \(self.categoryDictionary.count)")
-//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                    self.theTableView!.reloadData()
-//                })
-//            }
-//            else {
-//                //print("data was nil")
-//                self.stopActivityIndicatorWithError()
-//            }
-//            
-//        }).resume()
-
-
-//        self.weekChartView!.processedData += createProcessedDataFromRaw()
-        //printData()
+    }
+    
+    func dataRequestCompletedWithData(response: String) {
+        let splitByBreak = response.componentsSeparatedByString("<br>")
+        for line in splitByBreak {
+            if line.characters.count > 0 {
+                self.data += [line]
+            }
+            else {
+                //print("skipped one in data read")
+            }
+        }
+        self.weekChartView!.processedData += self.createProcessedDataFromRaw()
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.weekChartView!.setNeedsDisplay()
+        })
+    }
+    
+    func clearDynamicData() {
+        self.weekChartView!.processedData.removeAll()
+        self.data.removeAll()
     }
     
     @IBAction func didTapRetry() {
@@ -137,7 +91,6 @@ class WeekViewController: UIViewController {
             self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
             self.errorStackView!.hidden = true
         })
-        //print("activity indicator started")
     }
     
     func stopActivityIndicatorAndClear() {
@@ -145,7 +98,6 @@ class WeekViewController: UIViewController {
             self.activityIndicatorView!.stopAnimating()
             self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
         })
-        //print("activity indicator stopped and cleared")
     }
     
     func stopActivityIndicatorWithError() {
@@ -153,7 +105,6 @@ class WeekViewController: UIViewController {
             self.activityIndicatorView!.stopAnimating()
             self.errorStackView!.hidden = false
         })
-        //print("activity indicator stopped with error")
     }
     
     func createProcessedDataFromRaw() -> [(date: NSDate, category: String, event: String)] {
