@@ -74,7 +74,7 @@ class WeightViewController: UIViewController {
     
         self.startActivityIndicator()
     
-        let requestString = "http://\(hostname!)/cgi-bin/database/read?username=\(username!)&category=\(category!)"
+        let requestString = "http://taylorg.no-ip.org/cgi-bin/database/read?username=\(username!)&category=\(category!)"
         
         NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: requestString)!)) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
             

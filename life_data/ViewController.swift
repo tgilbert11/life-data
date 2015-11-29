@@ -247,7 +247,7 @@ class ViewController: UIViewController {
         request!.categoryIndex = indexPath.row
         request!.categoryDictionary = categoryDictionary
         request!.categoryByIndex = categoryByIndex
-        request!.textBits.append("http://\(hostname)/cgi-bin/database/add?username=\(usernameString)&time=%22\(timeString)%22&category=\(categoryString)")
+        request!.textBits.append("http://taylorg.no-ip.org/cgi-bin/database/add?username=\(usernameString)&time=%22\(timeString)%22&category=\(categoryString)")
         for (dataType, _/*dataTypeDictionary*/) in categoryDictionary[categoryByIndex[indexPath.row]![-1]![-1]!]! {
             if dataType != "descriptor" {
                 //println("  \(dataType)")

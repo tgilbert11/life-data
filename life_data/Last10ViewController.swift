@@ -53,7 +53,7 @@ class Last10ViewController: UIViewController {
         clearDynamicData()
         startActivityIndicator()
     
-        let urlString = "http://\(hostname!)/cgi-bin/database/readLast10?username=\(username!)"
+        let urlString = "http://taylorg.no-ip.org/cgi-bin/database/readLast10?username=\(username!)"
         
         NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: urlString)!)) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
             

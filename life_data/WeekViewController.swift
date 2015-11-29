@@ -44,7 +44,7 @@ class WeekViewController: UIViewController {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let fromTime = dateFormatter.stringFromDate(eightDaysAgo)
-        let URLString = "http://\(hostname!)/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
+        let URLString = "http://taylorg.no-ip.org/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
         
         NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: URLString)!), completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
 
