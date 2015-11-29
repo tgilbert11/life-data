@@ -52,7 +52,7 @@ class ViewController: UIViewController {
     func prepareStaticUI() {
         self.activityIndicatorView!.hidesWhenStopped = true
         self.errorStackView!.hidden = true
-        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
+        self.maskView!.hidden = true
         timeSlider!.setValue(1, animated: true)
         updateTimeLabelWithDate(nil)
     }
@@ -172,7 +172,7 @@ class ViewController: UIViewController {
     func startActivityIndicator() {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.startAnimating()
-            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
+            self.maskView!.hidden = false
             self.errorStackView!.hidden = true
         })
         //print("activity indicator started")
@@ -181,7 +181,7 @@ class ViewController: UIViewController {
     func stopActivityIndicatorAndClear() {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.stopAnimating()
-            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
+            self.maskView!.hidden = true
         })
         //print("activity indicator stopped and cleared")
     }
