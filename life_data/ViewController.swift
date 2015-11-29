@@ -196,11 +196,11 @@ class ViewController: UIViewController {
     
     func clearDynamicData() {
         self.APIString = nil
-        self.categoryDictionary.removeAll()
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.categoryDictionary.removeAll()
             self.theTableView!.reloadData()
+            self.updateTimeLabelWithDate(nil)
         })
-        self.updateTimeLabelWithDate(nil)
     }
 
 
