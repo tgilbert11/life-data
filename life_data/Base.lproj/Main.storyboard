@@ -270,35 +270,76 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XMs-Cr-ysO">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xD7-kr-0OB">
+                                        <rect key="frame" x="195" y="240" width="210.5" height="56.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="could not connect to server" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mcg-Rr-OOk">
+                                                <rect key="frame" x="0.0" y="0.0" width="210.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Pf-CM-F7y">
+                                                <rect key="frame" x="0.0" y="20" width="210.5" height="36"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                <state key="normal" title="retry"/>
+                                                <connections>
+                                                    <action selector="didTapRetry" destination="Enx-Jx-kOv" eventType="touchUpInside" id="5sV-4i-AkF"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="FB5-3I-DRM">
+                                        <rect key="frame" x="290" y="258" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="0.25" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="FB5-3I-DRM" firstAttribute="centerY" secondItem="XMs-Cr-ysO" secondAttribute="centerY" id="H4l-zt-SBa"/>
+                                    <constraint firstItem="xD7-kr-0OB" firstAttribute="centerY" secondItem="XMs-Cr-ysO" secondAttribute="centerY" id="PMm-pE-Ov0"/>
+                                    <constraint firstItem="FB5-3I-DRM" firstAttribute="centerX" secondItem="XMs-Cr-ysO" secondAttribute="centerX" id="Wft-cj-80X"/>
+                                    <constraint firstItem="xD7-kr-0OB" firstAttribute="centerX" secondItem="XMs-Cr-ysO" secondAttribute="centerX" id="oQZ-46-CBJ"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="XMs-Cr-ysO" firstAttribute="leading" secondItem="YDy-GJ-vF6" secondAttribute="leadingMargin" constant="-20" id="11y-1T-Gav"/>
                             <constraint firstItem="Zjv-om-zTF" firstAttribute="leading" secondItem="YDy-GJ-vF6" secondAttribute="leadingMargin" id="1Op-IV-Pwo"/>
                             <constraint firstItem="yD5-e6-fDj" firstAttribute="trailing" secondItem="YDy-GJ-vF6" secondAttribute="trailingMargin" id="9U3-zV-qSv"/>
                             <constraint firstItem="Ieb-Q1-rqM" firstAttribute="top" secondItem="wf5-tU-jLZ" secondAttribute="bottom" constant="8" id="Bgq-JN-380"/>
                             <constraint firstItem="sh1-pW-CBs" firstAttribute="centerX" secondItem="Zjv-om-zTF" secondAttribute="centerX" id="CyF-LT-IXJ"/>
+                            <constraint firstItem="dnG-dN-ifx" firstAttribute="top" secondItem="XMs-Cr-ysO" secondAttribute="bottom" id="Dkw-RD-d3c"/>
                             <constraint firstItem="pYw-Jk-B2j" firstAttribute="bottom" secondItem="wf5-tU-jLZ" secondAttribute="bottom" id="Ne4-aN-Zdy"/>
                             <constraint firstItem="wf5-tU-jLZ" firstAttribute="leading" secondItem="IRo-rk-Tar" secondAttribute="leading" id="O6K-s6-lmE"/>
                             <constraint firstItem="wf5-tU-jLZ" firstAttribute="trailing" secondItem="YDy-GJ-vF6" secondAttribute="trailingMargin" id="Q2w-8n-4wB"/>
                             <constraint firstItem="IRo-rk-Tar" firstAttribute="centerY" secondItem="Ieb-Q1-rqM" secondAttribute="centerY" id="SAa-sD-8M4"/>
                             <constraint firstItem="wf5-tU-jLZ" firstAttribute="top" secondItem="Y6d-2w-wau" secondAttribute="bottom" constant="16" id="Stn-yV-i6e"/>
                             <constraint firstItem="dnG-dN-ifx" firstAttribute="top" secondItem="IRo-rk-Tar" secondAttribute="bottom" constant="8" id="acP-b7-vZd"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="XMs-Cr-ysO" secondAttribute="trailing" constant="-20" id="bv7-ht-rGg"/>
                             <constraint firstItem="Zjv-om-zTF" firstAttribute="top" secondItem="Y6d-2w-wau" secondAttribute="bottom" constant="16" id="cJ7-IG-jbz"/>
                             <constraint firstItem="sh1-pW-CBs" firstAttribute="centerY" secondItem="wf5-tU-jLZ" secondAttribute="centerY" id="dYH-8G-zXK"/>
                             <constraint firstItem="wf5-tU-jLZ" firstAttribute="centerX" secondItem="Ieb-Q1-rqM" secondAttribute="centerX" id="hr7-Gr-ekW"/>
                             <constraint firstItem="wf5-tU-jLZ" firstAttribute="leading" secondItem="YDy-GJ-vF6" secondAttribute="leadingMargin" constant="59" id="ijZ-Tf-DMw"/>
                             <constraint firstItem="Zjv-om-zTF" firstAttribute="centerX" secondItem="pYw-Jk-B2j" secondAttribute="centerX" id="rpn-oT-cI0"/>
+                            <constraint firstItem="XMs-Cr-ysO" firstAttribute="top" secondItem="Y6d-2w-wau" secondAttribute="bottom" id="uIl-nS-5pC"/>
                             <constraint firstItem="IRo-rk-Tar" firstAttribute="centerY" secondItem="yD5-e6-fDj" secondAttribute="centerY" id="zBI-dH-xo6"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="weight" id="GoN-wm-Itb"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="FB5-3I-DRM" id="obY-Pw-lbe"/>
                         <outlet property="centerXLabel" destination="Ieb-Q1-rqM" id="L9T-jp-EJR"/>
                         <outlet property="centerYLabel" destination="sh1-pW-CBs" id="jQ3-vV-gHX"/>
+                        <outlet property="errorStackView" destination="xD7-kr-0OB" id="99X-Qv-pEk"/>
                         <outlet property="graphView" destination="wf5-tU-jLZ" id="WPI-K4-qjY"/>
                         <outlet property="leftXLabel" destination="IRo-rk-Tar" id="KTS-39-oJc"/>
                         <outlet property="lowerYLabel" destination="pYw-Jk-B2j" id="kow-cL-NBj"/>
+                        <outlet property="maskView" destination="XMs-Cr-ysO" id="txK-fz-CUe"/>
                         <outlet property="rightXLabel" destination="yD5-e6-fDj" id="5hz-He-AQ4"/>
                         <outlet property="upperYLabel" destination="Zjv-om-zTF" id="4qx-J1-dmI"/>
                     </connections>
@@ -516,17 +557,18 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ye-PP-f0L">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="t4k-t2-FmE">
-                                        <rect key="frame" x="195" y="243" width="210.5" height="50.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="t4k-t2-FmE">
+                                        <rect key="frame" x="195" y="243" width="211" height="57"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="could not connect to server" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="17q-jU-R8P">
-                                                <rect key="frame" x="0.0" y="0.0" width="210.5" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="211" height="21"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TId-KI-rwg">
-                                                <rect key="frame" x="0.0" y="20" width="210.5" height="30"/>
+                                                <rect key="frame" x="0.0" y="21" width="211" height="36"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                 <state key="normal" title="retry"/>
                                                 <connections>
                                                     <action selector="didTapRetry" destination="Q5R-gK-8p6" eventType="touchUpInside" id="Cv8-tm-ODT"/>
@@ -534,7 +576,7 @@
                                             </button>
                                         </subviews>
                                     </stackView>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="pdL-6R-avY">
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="pdL-6R-avY">
                                         <rect key="frame" x="290" y="258" width="20" height="20"/>
                                     </activityIndicatorView>
                                 </subviews>
@@ -706,7 +748,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bfd-J2-ofx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2383" y="527"/>
+            <point key="canvasLocation" x="2175" y="675"/>
         </scene>
         <!--Title-->
         <scene sceneID="wc8-rE-kuP">
@@ -883,7 +925,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="JbN-uY-9dd"/>
         <segue reference="NbD-7j-fDF"/>
+        <segue reference="JbN-uY-9dd"/>
     </inferredMetricsTieBreakers>
 </document>

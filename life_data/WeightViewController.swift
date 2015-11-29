@@ -19,6 +19,10 @@ class WeightViewController: UIViewController {
     @IBOutlet var rightXLabel: UILabel?
     @IBOutlet var graphView: GraphView?
     
+    @IBOutlet var activityIndicatorView: UIActivityIndicatorView?
+    @IBOutlet var maskView: UIView?
+    @IBOutlet var errorStackView: UIStackView?
+    
     var username: String?
     var category: String?
     var hostname: String?
@@ -38,37 +42,57 @@ class WeightViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        getWeightData()
-        setLimits()
-        updateLabels()
-        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "needsDisplay", name: UIDeviceOrientationDidChangeNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
+        prepareStaticUI()
+        kickOffNewRequest()
     }
     
     override func viewDidLayoutSubviews() {
-        configureView()
+        setLimits()
+        fillInPoints()
+        prepareStaticUI()
         super.viewDidLayoutSubviews()
     }
     
-//    func needsDisplay() {
-//        graphView!.setNeedsDisplay()
-//    }
-    
-    func configureView() {
+    func prepareStaticUI() {
+        self.activityIndicatorView!.hidesWhenStopped = true
+        //self.errorStackView!.hidden = true
         updatePixelLimits()
-        fillInPoints()
+        updateLabels()
         redrawGraphView()
     }
     
-    func getWeightData() {
+    @IBAction func didTapRetry() {
+        kickOffNewRequest()
+    }
+    
+    func kickOffNewRequest() {
+    
+        self.startActivityIndicator()
+    
         let requestString = "http://\(hostname!)/cgi-bin/database/read?username=\(username!)&category=\(category!)"
-        //println(requestString)
-        let returnString = try? NSString(contentsOfURL: NSURL(string: requestString)!, encoding: NSUTF8StringEncoding)
-        //println(returnString!)
-        let splitByBreak = returnString!.componentsSeparatedByString("<br>")
+        
+        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: requestString)!)) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
+            
+            if data != nil {
+                //print("data != nil")
+                self.requestSucceededWithData(String(data: data!, encoding: NSUTF8StringEncoding)!)
+            }
+            else {
+                //print("data == nil")
+                self.stopActivityIndicatorWithError()
+            }
+            
+        }.resume()
+    }
+    
+    func requestSucceededWithData(data: String) {
+    
+        let splitByBreak = data.componentsSeparatedByString("<br>")
         var skippedFirstLineYet = false
         for line in splitByBreak {
             if skippedFirstLineYet == false {
@@ -78,19 +102,51 @@ class WeightViewController: UIViewController {
             let splitByComma = line.componentsSeparatedByString(",")
             if splitByComma.count > 1 {
                 if splitByComma[1] == " morning" {
-                    //println("line: \(line)")
                     let dateFormatter = NSDateFormatter();
                     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                     let date = dateFormatter.dateFromString(splitByComma[0] )
-                    //println("date: \(date!)")
                     let numberString = (splitByComma[2] as NSString)
                     let weight = numberString.doubleValue
                     morningDataPoints += [(date: date!, weight: weight)]
                 }
             }
         }
-        //println(morningDataPoints.count)
+        
+        setLimits()
+        fillInPoints()
+        stopActivityIndicatorAndClear()
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.updateLabels()
+            self.redrawGraphView()
+        })
+        
     }
+        
+    func startActivityIndicator() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.startAnimating()
+            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
+            self.errorStackView!.hidden = true
+            //print("started")
+        })
+    }
+    
+    func stopActivityIndicatorAndClear() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.stopAnimating()
+            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
+            //print("stop and clear")
+        })
+    }
+    
+    func stopActivityIndicatorWithError() {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.activityIndicatorView!.stopAnimating()
+            self.errorStackView!.hidden = false
+            //print("stop with error")
+        })
+    }
+
     
     func setLimits() {
         for (date, weight) in morningDataPoints {
@@ -106,7 +162,7 @@ class WeightViewController: UIViewController {
             if minWeight == nil {
                 minWeight = weight
             }
-            if date.timeIntervalSinceDate(maxDate!) > 0{
+            if date.timeIntervalSinceDate(maxDate!) > 0 {
                 maxDate = date
             }
             if date.timeIntervalSinceDate(minDate!) < 0 {
@@ -124,17 +180,17 @@ class WeightViewController: UIViewController {
     func updateLabels() {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MM/dd"
-        leftXLabel!.text = dateFormatter.stringFromDate(minDate!)
-        centerXLabel!.text = dateFormatter.stringFromDate(minDate!.dateByAddingTimeInterval(maxDate!.timeIntervalSinceDate(minDate!)/2))
-        rightXLabel!.text = dateFormatter.stringFromDate(maxDate!)
+        leftXLabel!.text = minDate != nil ? dateFormatter.stringFromDate(minDate!) : " "
+        centerXLabel!.text = minDate != nil && maxDate != nil ? dateFormatter.stringFromDate(minDate!.dateByAddingTimeInterval(maxDate!.timeIntervalSinceDate(minDate!)/2)) : " "
+        rightXLabel!.text = maxDate != nil ? dateFormatter.stringFromDate(maxDate!) : " "
         
         let numberFormatter = NSNumberFormatter()
         numberFormatter.minimumIntegerDigits = 1
         numberFormatter.minimumFractionDigits = 1
         numberFormatter.maximumFractionDigits = 1
-        upperYLabel!.text = numberFormatter.stringFromNumber(NSNumber(double: maxWeight!))
-        centerYLabel!.text = numberFormatter.stringFromNumber(NSNumber(double: (maxWeight!-minWeight!)/2 + minWeight!))
-        lowerYLabel!.text = numberFormatter.stringFromNumber(NSNumber(double: minWeight!))
+        upperYLabel!.text = maxWeight != nil ? numberFormatter.stringFromNumber(NSNumber(double: maxWeight!)) : " "
+        centerYLabel!.text = minWeight != nil && maxWeight != nil ? numberFormatter.stringFromNumber(NSNumber(double: (maxWeight!-minWeight!)/2 + minWeight!)) : " "
+        lowerYLabel!.text = minWeight != nil ? numberFormatter.stringFromNumber(NSNumber(double: minWeight!)) : " "
     }
     
     func updatePixelLimits() {
@@ -163,14 +219,11 @@ class WeightViewController: UIViewController {
         drawingPoints.removeAll(keepCapacity: false)
         for (date, weight) in morningDataPoints {
             drawingPoints += [CGPointMake(xValueForDate(date), yValueForWeight(weight))]
-            //println("weight: \(weight), x: \(drawingPoints.last!.x), y: \(drawingPoints.last!.y)")
         }
     }
     
     func redrawGraphView() {
-        //println("view.width: \(CGRectGetWidth(graphView!.bounds)), view.height: \(CGRectGetHeight(graphView!.bounds))")
-        graphView!.drawingPoints = drawingPoints
-        print("redrawGraphView")
-        //graphView!.setNeedsDisplay()
+        self.graphView!.drawingPoints = drawingPoints
+        self.graphView!.setNeedsDisplay()
     }
 }
