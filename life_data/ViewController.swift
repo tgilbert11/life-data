@@ -270,7 +270,7 @@ class ViewController: UIViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier! == "showSelectionViewController" {
-            print("did selection segue viewController")
+            //print("did selection segue viewController")
             let selectionViewController = segue.destinationViewController as! SelectionViewController
             selectionViewController.request = self.request
         }

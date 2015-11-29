@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class SelectionViewController: UITableViewController {
+class SelectionViewController: UIViewController {
     
     var request: Request?
     var categoryName: String?
@@ -23,7 +23,7 @@ class SelectionViewController: UITableViewController {
         titleNavigationItem!.title = request!.categoryDictionary[categoryName!]![dataTypeName!]!["descriptor"]!
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("basicCell", forIndexPath: indexPath) 
         let cellShortName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![indexPath.row]!
         let cellText = request!.categoryDictionary[categoryName!]![dataTypeName!]![cellShortName]!
@@ -31,16 +31,16 @@ class SelectionViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let theseKeys = request!.categoryDictionary[categoryName!]![dataTypeName!]!.keys
         return theseKeys.count-2
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let addedData = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![indexPath.row]!
         let newString = "&\(dataTypeName!)=\(addedData)"
         //println(newString)
@@ -83,7 +83,7 @@ class SelectionViewController: UITableViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier! == "showSelectionViewController" {
-            print("did selection segue SelectionViewController")
+            //print("did selection segue SelectionViewController")
             let selectionViewController = segue.destinationViewController as! SelectionViewController
             selectionViewController.request = self.request
         }
