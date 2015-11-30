@@ -675,6 +675,9 @@
                                                 <rect key="frame" x="0.0" y="20" width="210.5" height="36"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                 <state key="normal" title="retry"/>
+                                                <connections>
+                                                    <action selector="didTapRetry" destination="sMY-GP-2mH" eventType="touchUpInside" id="fmP-J2-p2f"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -709,6 +712,10 @@
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="yag-ge-YID"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="tYb-F4-xZB" id="8h2-gf-CxS"/>
+                        <outlet property="errorStackView" destination="Nzv-hJ-JF3" id="4Ug-Mf-NXU"/>
+                        <outlet property="maskView" destination="T5B-fk-CMM" id="Xj9-X2-9AM"/>
+                        <outlet property="theTableView" destination="4aC-U8-Gah" id="tX4-9K-753"/>
                         <outlet property="titleNavigationItem" destination="yag-ge-YID" id="6Yg-6T-VjR"/>
                         <segue destination="OV3-cl-kIj" kind="show" identifier="showNumericViewController" id="PGc-kN-Wdy"/>
                         <segue destination="xwu-Ll-wcy" kind="show" identifier="showTextViewController" id="rcx-bu-SUW"/>
@@ -856,7 +863,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="9sq-eI-fxO"/>
-        <segue reference="JbN-uY-9dd"/>
-        <segue reference="NbD-7j-fDF"/>
+        <segue reference="rcx-bu-SUW"/>
+        <segue reference="PGc-kN-Wdy"/>
     </inferredMetricsTieBreakers>
 </document>
