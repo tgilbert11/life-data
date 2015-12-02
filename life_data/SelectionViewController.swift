@@ -34,12 +34,13 @@ class SelectionViewController: UIViewController {
         dataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
         titleNavigationItem!.title = request!.categoryDictionary[categoryName!]![dataTypeName!]!["descriptor"]!
         self.maskView!.hidden = true
-        self.activityIndicatorView!.hidesWhenStopped = true
+        self.navigationItem.setHidesBackButton(false, animated: false)
         let indexPath = self.theTableView!.indexPathForSelectedRow
         if indexPath != nil {
             self.theTableView!.deselectRowAtIndexPath(indexPath!, animated: true)
         }
     }
+    
     /// called to depart the view to another page in the app
     ///
     /// Enters state: away
@@ -47,9 +48,7 @@ class SelectionViewController: UIViewController {
     /// From state: Waiting_For_Input
     func exitingPage() {
         if self.isMovingFromParentViewController() {
-            print("moving from")
             self.removeATextBit()
-            print("textBits.count: \(request!.textBits.count)")
         }
     }
     
@@ -58,30 +57,26 @@ class SelectionViewController: UIViewController {
         if request!.filledOutSoFar == request!.dataTypeNames.count {
             self.startActivityIndicator()
             self.kickOffNewRequest()
-            self.navigationItem.setHidesBackButton(true, animated: false)
         }
         else {
             let nextDataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
             let type = request!.categoryDictionary[categoryName!]![nextDataTypeName]!["dataType"]!
-            if type == "s" {
-                self.performSegueWithIdentifier("showSelectionViewController", sender: self)
-            }
-            else if type == "n" {
-                self.performSegueWithIdentifier("showNumericViewController", sender: self)
-            }
-            else if  type == "t" {
-                self.performSegueWithIdentifier("showTextViewController", sender: self)
+            switch (type) {
+                case "s":
+                    self.performSegueWithIdentifier("showSelectionViewController", sender: self)
+                case "n":
+                    self.performSegueWithIdentifier("showNumericViewController", sender: self)
+                case "t":
+                    self.performSegueWithIdentifier("showTextViewController", sender: self)
+                default:
+                    break
             }
         }
     }
     
     /// happens when background thread report successful URLRequest
     func requestSucceeded() {
-        print("requestSucceeded()")
         self.stopActivityIndicatorAndClear()
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.navigationItem.setHidesBackButton(false, animated: false)
-        })
         self.returnToRootViewController()
     }
     
@@ -95,15 +90,8 @@ class SelectionViewController: UIViewController {
     }
     
     @IBAction func cancelledRequest() {
+        self.removeATextBit()
         self.stopActivityIndicatorAndClear()
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.navigationItem.setHidesBackButton(false, animated: false)
-            let indexPath = self.theTableView!.indexPathForSelectedRow
-            if indexPath != nil {
-                self.theTableView!.deselectRowAtIndexPath(indexPath!, animated: true)
-            }
-            self.removeATextBit()
-        })
     }
     
     // MARK: - helper methods
@@ -114,7 +102,7 @@ class SelectionViewController: UIViewController {
             self.activityIndicatorView!.startAnimating()
             self.maskView!.hidden = false
             self.errorStackView!.hidden = true
-            print("started")
+            self.navigationItem.setHidesBackButton(true, animated: false)
         })
     }
     
@@ -123,7 +111,11 @@ class SelectionViewController: UIViewController {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.stopAnimating()
             self.maskView!.hidden = true
-            print("stop and clear")
+            self.navigationItem.setHidesBackButton(false, animated: false)
+            let indexPath = self.theTableView!.indexPathForSelectedRow
+            if indexPath != nil {
+                self.theTableView!.deselectRowAtIndexPath(indexPath!, animated: true)
+            }
         })
     }
     
@@ -132,21 +124,18 @@ class SelectionViewController: UIViewController {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.stopAnimating()
             self.errorStackView!.hidden = false
-            print("stop with error")
         })
     }
     
     func removeATextBit() {
         request!.filledOutSoFar--
         request!.textBits.removeLast()
-        print("a text bit removed")
     }
     
     /// dispatches async main queue request to popToRootViewController
     func returnToRootViewController() {
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.navigationController!.popToRootViewControllerAnimated(true)
-            print("popped to root view controller")
         })
     }
     
@@ -183,19 +172,18 @@ class SelectionViewController: UIViewController {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier! == "showSelectionViewController" {
-            print("did selection segue SelectionViewController, textBits.count: \(request!.textBits.count)")
-            let selectionViewController = segue.destinationViewController as! SelectionViewController
-            selectionViewController.request = self.request
-            
-        }
-        if segue.identifier! == "showNumericViewController" {
-            let selectionViewController = segue.destinationViewController as! NumericViewController
-            selectionViewController.request = self.request
-        }
-        if segue.identifier! == "showTextViewController" {
-            let selectionViewController = segue.destinationViewController as! TextViewController
-            selectionViewController.request = self.request
+        switch (segue.identifier!) {
+            case "showSelectionViewController":
+                let selectionViewController = segue.destinationViewController as! SelectionViewController
+                selectionViewController.request = self.request
+            case "showNumericViewController":
+                let selectionViewController = segue.destinationViewController as! NumericViewController
+                selectionViewController.request = self.request
+            case "showTextViewController":
+                let selectionViewController = segue.destinationViewController as! TextViewController
+                selectionViewController.request = self.request
+            default:
+                break
         }
     }
     
@@ -227,7 +215,6 @@ class SelectionViewController: UIViewController {
         let newString = "&\(dataTypeName!)=\(addedData)"
         request!.textBits.append(newString)
         request!.filledOutSoFar++
-        
         self.tappedSubmitButton()
     }
 }
