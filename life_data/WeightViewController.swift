@@ -23,7 +23,7 @@ class WeightViewController: UIViewController {
     var category: String?
     var hostname: String?
     
-    var morningDataPoints: [(date: NSDate, weight: Double)] = []
+    var dataPoints: [(date: NSDate, weight: Double)] = []
     var minDate: NSDate?
     var maxDate: NSDate?
     var minWeight: Double?
@@ -77,7 +77,6 @@ class WeightViewController: UIViewController {
             }
             let splitByComma = line.componentsSeparatedByString(",")
             if splitByComma.count > 1 {
-                if splitByComma[1] == " morning" {
                     //println("line: \(line)")
                     let dateFormatter = NSDateFormatter();
                     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -85,15 +84,14 @@ class WeightViewController: UIViewController {
                     //println("date: \(date!)")
                     let numberString = (splitByComma[2] as NSString)
                     let weight = numberString.doubleValue
-                    morningDataPoints += [(date: date!, weight: weight)]
-                }
+                    dataPoints += [(date: date!, weight: weight)]
             }
         }
         //println(morningDataPoints.count)
     }
     
     func setLimits() {
-        for (date, weight) in morningDataPoints {
+        for (date, weight) in dataPoints {
             if maxDate == nil {
                 maxDate = date
             }
@@ -161,7 +159,7 @@ class WeightViewController: UIViewController {
     
     func fillInPoints() {
         drawingPoints.removeAll(keepCapacity: false)
-        for (date, weight) in morningDataPoints {
+        for (date, weight) in dataPoints {
             drawingPoints += [CGPointMake(xValueForDate(date), yValueForWeight(weight))]
             //println("weight: \(weight), x: \(drawingPoints.last!.x), y: \(drawingPoints.last!.y)")
         }
@@ -170,7 +168,7 @@ class WeightViewController: UIViewController {
     func redrawGraphView() {
         //println("view.width: \(CGRectGetWidth(graphView!.bounds)), view.height: \(CGRectGetHeight(graphView!.bounds))")
         graphView!.drawingPoints = drawingPoints
-        print("redrawGraphView")
+        //print("redrawGraphView")
         //graphView!.setNeedsDisplay()
     }
 }
