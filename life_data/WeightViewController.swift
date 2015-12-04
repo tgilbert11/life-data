@@ -101,13 +101,12 @@ class WeightViewController: UIViewController {
             }
             let splitByComma = line.componentsSeparatedByString(",")
             if splitByComma.count > 1 {
-                if splitByComma[1] == " morning" {
-                    let dateFormatter = NSDateFormatter();
-                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                    let date = dateFormatter.dateFromString(splitByComma[0] )
-                    let numberString = (splitByComma[2] as NSString)
-                    let weight = numberString.doubleValue
-                    dataPoints += [(date: date!, weight: weight)]
+                let dateFormatter = NSDateFormatter();
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                let date = dateFormatter.dateFromString(splitByComma[0] )
+                let numberString = (splitByComma[2] as NSString)
+                let weight = numberString.doubleValue
+                dataPoints += [(date: date!, weight: weight)]
             }
         }
         

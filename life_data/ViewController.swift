@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     @IBOutlet var maskView: UIView?
     @IBOutlet var errorStackView: UIStackView?
     
-    let username = "taylorg"
+    let username = "morganm"
     
     var dateToBeUsed: NSDate?
     var dates: [(proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float)] = []
