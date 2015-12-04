@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="bWH-Vn-smX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="bWH-Vn-smX">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--add data-->
+        <!--add data (1C1)-->
         <scene sceneID="WnP-H4-mpU">
             <objects>
                 <viewController id="Ewy-mn-zgf" customClass="ViewController" customModule="life_data" customModuleProvider="target" sceneMemberID="viewController">
@@ -76,7 +76,7 @@
                             <constraint firstItem="qRD-ms-jPI" firstAttribute="leading" secondItem="G3C-gJ-3Hh" secondAttribute="leadingMargin" id="mhv-NH-JJQ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="add data" id="uyM-mJ-bCg">
+                    <navigationItem key="navigationItem" title="add data (1C1)" id="uyM-mJ-bCg">
                         <barButtonItem key="leftBarButtonItem" title="delete last" id="tXp-7p-udh">
                             <connections>
                                 <action selector="didTapDeleteButton" destination="Ewy-mn-zgf" id="Sdv-A8-gzn"/>
