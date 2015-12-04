@@ -27,7 +27,7 @@ class WeightViewController: UIViewController {
     var category: String?
     var hostname: String?
     
-    var morningDataPoints: [(date: NSDate, weight: Double)] = []
+    var dataPoints: [(date: NSDate, weight: Double)] = []
     var minDate: NSDate?
     var maxDate: NSDate?
     var minWeight: Double?
@@ -101,14 +101,12 @@ class WeightViewController: UIViewController {
             }
             let splitByComma = line.componentsSeparatedByString(",")
             if splitByComma.count > 1 {
-                if splitByComma[1] == " morning" {
-                    let dateFormatter = NSDateFormatter();
-                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                    let date = dateFormatter.dateFromString(splitByComma[0] )
-                    let numberString = (splitByComma[2] as NSString)
-                    let weight = numberString.doubleValue
-                    morningDataPoints += [(date: date!, weight: weight)]
-                }
+                let dateFormatter = NSDateFormatter();
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                let date = dateFormatter.dateFromString(splitByComma[0] )
+                let numberString = (splitByComma[2] as NSString)
+                let weight = numberString.doubleValue
+                dataPoints += [(date: date!, weight: weight)]
             }
         }
         
@@ -149,7 +147,7 @@ class WeightViewController: UIViewController {
 
     
     func setLimits() {
-        for (date, weight) in morningDataPoints {
+        for (date, weight) in dataPoints {
             if maxDate == nil {
                 maxDate = date
             }
@@ -217,7 +215,7 @@ class WeightViewController: UIViewController {
     
     func fillInPoints() {
         drawingPoints.removeAll(keepCapacity: false)
-        for (date, weight) in morningDataPoints {
+        for (date, weight) in dataPoints {
             drawingPoints += [CGPointMake(xValueForDate(date), yValueForWeight(weight))]
         }
     }
