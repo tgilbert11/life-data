@@ -10,81 +10,88 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet var theTableView: UITableView?
-    @IBOutlet var timeSlider: UISlider?
-    @IBOutlet var timeLabel: UILabel?
-    
+    @IBOutlet var theTableView: UITableView!
+    @IBOutlet var timeSlider: UISlider!
+    @IBOutlet var timeLabel: UILabel!
+
+	// BETO TODO: move to config file?
     let username = "taylorg"
-    
+
+	// BETO TODO: can we make these non optional?
     var dateToBeUsed: NSDate?
     var dates: [(proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float)] = []
-    
+
+	// BETO TODO: WTF is this, need typealiases
     // String (categoryName) -> String (dataTypeName) -> String (dataItemName) -> String (data item name)
     var categoryDictionary = [String: Dictionary<String, Dictionary<String, String>>]()
     
-    // Int -> categories (-1 is categoryName, numbers = dataTypes) -> dataTypes (-1 is dataTypeName, numbers = dataItems) -> dataItems (number is dataItemName)
-    var categoryByIndex = [Int: Dictionary<Int, Dictionary<Int, String>>]()
-    
-    var request: Request?
-    var hostname = ""
-    
+    // CategoryIndex -> categories (-1 is categoryName, numbers = dataTypes) -> dataTypes (-1 is dataTypeName, numbers = dataItems) -> dataItems (number is dataItemName)
+	// BETO TODO: make this a struct or something, this is very hard to reason about
+	typealias CategoryIndex = Int
+	typealias DataTypeIndex = Int
+	typealias DataItemIndex = Int
+    var categoryByIndex = [CategoryIndex: Dictionary<DataTypeIndex, Dictionary<DataItemIndex, String>>]()
+
+	// BETO TODO: can we make these non optional?
+    var request: Request!
+	var hostname: String?
+
     func getData() {
-        var categoryName = ""
-        var dataTypeName = ""
-        var dataItemName = ""
-        var categoryIndex = -1
-        var dataTypeIndex = -1
-        var dataItemIndex = -1
-        
-        var APIString = ""
+		let APIString: String
         let URLPath = "http://taylorg.no-ip.org/cgi-bin/database/API"
-        let URL = NSURL(string: URLPath)
-        let awayString = try? String(contentsOfURL: URL!, encoding: NSUTF8StringEncoding)
+        let URL = NSURL(string: URLPath)!
+        let awayString = try? String(contentsOfURL: URL, encoding: NSUTF8StringEncoding)
         //APIString = awayString!
         //println(awayString)
-        if awayString == nil {
-            let URLPathHome = "http://192.168.1.110/cgi-bin/database/API"
-            let URLHome = NSURL(string: URLPathHome)
-            let homeString = try? String(contentsOfURL: URLHome!, encoding: NSUTF8StringEncoding)
-            //println(homeString)
-            APIString = homeString!
-            hostname = "192.168.1.110"
+        if let realAwayString = awayString {
+			APIString = realAwayString
+			hostname = "taylorg.no-ip.org"
         }
         else {
-            APIString = awayString!
-            hostname = "taylorg.no-ip.org"
+			let URLPathHome = "http://192.168.1.110/cgi-bin/database/API"
+			let URLHome = NSURL(string: URLPathHome)
+			APIString = try! String(contentsOfURL: URLHome!, encoding: NSUTF8StringEncoding)
+			//println(homeString)
+			hostname = "192.168.1.110"
         }
         
         //println(APIString)
         
         //let path = "/Users/taylorg/Desktop/life_data/life_data/mysqlDynamic API.txt"
         //let rawText = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: nil)!
+
+		// BETO TODO: gotta be a better way to interpret this data. Also should be in a class by itself to insulate this class from intimate knowledge of way data is structured
         let splitByLines = APIString.componentsSeparatedByString("\n")
-        for line in splitByLines {
-            if line.substringToIndex(line.startIndex.advancedBy(3)) == ">>>" {
+		var categoryIndex: CategoryIndex = 0
+		// BETO TODO: IUO usually are an anti-pattern, rethink this.
+		// perhaps we do a bunch of nested while loops, so we say "find category, interpret data type, interpret data items, then done"
+		var dataTypeIndex: DataTypeIndex!
+		var dataItemIndex: Int!
+		var categoryName: String!
+		var dataTypeName: String!
+		var dataItemName: String
+
+		for line: String in splitByLines {
+            if line.hasPrefix(">>>") {
                 //println("category")
+
+				// BETO TODO: oh god no, so many indices and NSString methods, gotta be a better way
                 let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(3))
                 let splitByCommas = removedArrows.componentsSeparatedByString(",")
-                let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                categoryName = shortName
+                categoryName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                 let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                //println("\(shortName) \(humanName)")
-                categoryDictionary[categoryName] = [String: Dictionary<String,String>]()
-                categoryDictionary[categoryName]!["descriptor"] = [String: String]()
-                categoryDictionary[categoryName]!["descriptor"]!["descriptor"] = humanName
-                
-                categoryIndex++
+
+				// BETO TODO: wtf this doesn't seem right
+                categoryDictionary[categoryName] = ["descriptor": ["descriptor": humanName]]
+
+				categoryIndex += 1
+
+				// BETO TODO: need better sentinels?
                 dataTypeIndex = -1
                 dataItemIndex = -1
-                categoryByIndex[categoryIndex] = [Int: Dictionary<Int, String>]()
-                categoryByIndex[categoryIndex]![-1] = [Int: String]()
-                categoryByIndex[categoryIndex]![-1]![-1] = categoryName
-                
-                //let retrievedName = categoryDictionary[categoryName]!["descriptor"]!["descriptor"]!
-                //println("\(retrievedName)")
+				categoryByIndex[categoryIndex] = [dataTypeIndex: [dataItemIndex: categoryName]]
             }
-            else if line.substringToIndex(line.startIndex.advancedBy(2)) == ">>" {
-                //println("dataType")
+            else if line.hasPrefix(">>") {
                 let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(2))
                 let splitByCommas = removedArrows.componentsSeparatedByString(",")
                 let fullDataType = splitByCommas[0].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
@@ -92,35 +99,25 @@ class ViewController: UIViewController {
                 let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                 dataTypeName = shortName
                 let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                //println("\(shortName) \(humanName)")
-                categoryDictionary[categoryName]![dataTypeName] = [String: String]()
-                categoryDictionary[categoryName]![dataTypeName]!["descriptor"] = humanName
-                categoryDictionary[categoryName]![dataTypeName]!["dataType"] = shortDataType
-                
-                dataTypeIndex++
+                categoryDictionary[categoryName]![dataTypeName] = ["descriptor": humanName, "dataType": shortDataType]
+
+				// BETO TODO: this is a bug, file a radar, should be able to +=
+                dataTypeIndex = dataTypeIndex + 1
+				// BETO TODO: need better sentinels?
                 dataItemIndex = -1
-                categoryByIndex[categoryIndex]![dataTypeIndex] = [Int: String]()
-                categoryByIndex[categoryIndex]![dataTypeIndex]![-1] = shortName
-                
-                //let retrievedName = categoryDictionary[categoryName]![dataTypeName]!["descriptor"]!
-                //let retrievedType = categoryDictionary[categoryName]![dataTypeName]!["dataType"]!
-                //println("    \(retrievedName), \(retrievedType)")
+				categoryByIndex[categoryIndex]![dataTypeIndex] = [dataItemIndex: shortName]
 
             }
-            else if line.substringToIndex(line.startIndex.advancedBy(1)) == ">" {
-                //println("dataItem")
+            else if line.hasPrefix(">") {
                 let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(1))
                 let splitByCommas = removedArrows.componentsSeparatedByString(",")
                 let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                 dataItemName = shortName
                 let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                //println("\(shortName) \(humanName)")
                 categoryDictionary[categoryName]![dataTypeName]![dataItemName] = humanName
                 
-                dataItemIndex++
+                dataItemIndex = dataItemIndex + 1
                 categoryByIndex[categoryIndex]![dataTypeIndex]![dataItemIndex] = shortName
-                                //let retrievedName = categoryDictionary[categoryName]![dataTypeName]![dataItemName]!
-                //println("        \(retrievedName)")
             }
         }
     }
@@ -140,7 +137,7 @@ class ViewController: UIViewController {
     
     func refreshLayout() {
         getData()
-        timeSlider!.setValue(1, animated: true)
+        timeSlider.setValue(1, animated: true)
         updateTimeLabelWithDate(nil)
     }
 
@@ -150,9 +147,9 @@ class ViewController: UIViewController {
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
+        let cell = theTableView.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
+		// BETO TODO: this might be the grossest line of code I've ever seen :) 7 '!' used 7 times
         cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]!["descriptor"]!["descriptor"]!
-        //cell.detailTextLabel = UILabel()
         return cell
     }
     
@@ -165,12 +162,10 @@ class ViewController: UIViewController {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //let cell = tableView.cellForRowAtIndexPath(indexPath)
-        //println(categoryByIndex[indexPath.row]![-1]![-1]!)
-        theTableView!.deselectRowAtIndexPath(indexPath, animated: true)
+        theTableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         let usernameString = username
-        var currentDate: NSDate?
+        let currentDate: NSDate
         if dateToBeUsed == nil {
             currentDate = NSDate()
         }
@@ -179,25 +174,25 @@ class ViewController: UIViewController {
         }
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
-        let timeString = dateFormatter.stringFromDate(currentDate!)
-        //println(timeString)
+        let timeString = dateFormatter.stringFromDate(currentDate)
+		// BETO TODO: NO NO NO NO NO OH GOOOODDDDDDD CTHULUUUUUUU
         let categoryString = categoryByIndex[indexPath.row]![-1]![-1]!
         let firstDataTypeName = categoryByIndex[indexPath.row]![0]![-1]!
         
         request = Request()
-        request!.categoryIndex = indexPath.row
-        request!.categoryDictionary = categoryDictionary
-        request!.categoryByIndex = categoryByIndex
-        request!.textBits.append("http://\(hostname)/cgi-bin/database/add?username=\(usernameString)&time=%22\(timeString)%22&category=\(categoryString)")
-        for (dataType, _/*dataTypeDictionary*/) in categoryDictionary[categoryByIndex[indexPath.row]![-1]![-1]!]! {
+        request.categoryIndex = indexPath.row
+        request.categoryDictionary = categoryDictionary
+        request.categoryByIndex = categoryByIndex
+        request.textBits.append("http://\(hostname)/cgi-bin/database/add?username=\(usernameString)&time=%22\(timeString)%22&category=\(categoryString)")
+		// BETO TODO: CTHULUUUUUUUUUU
+        for (dataType, _) in categoryDictionary[categoryByIndex[indexPath.row]![-1]![-1]!]! {
             if dataType != "descriptor" {
-                //println("  \(dataType)")
-                request!.dataTypeNames.append(dataType)
+                request.dataTypeNames.append(dataType)
             }
         }
-        //println(request!.textBits[0])
+		// BETO TODO: CTHULUUUUUUUUUU
         let type = categoryDictionary[categoryString]![firstDataTypeName]!["dataType"]!
-        //println(type)
+		// BETO TODO: use an enum here, this is gross
         if type == "s" {
             self.performSegueWithIdentifier("showSelectionViewController", sender: self)
         }
@@ -211,6 +206,7 @@ class ViewController: UIViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier! == "showSelectionViewController" {
+			// BETO TODO: could use a protocol and avoid casting to direct class type, all of these have request properties
             let selectionViewController = segue.destinationViewController as! SelectionViewController
             selectionViewController.request = self.request
         }
@@ -230,46 +226,29 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didSlideSlider() {
-    
         let now = NSDate()
         var updatedDate: NSDate?
-        if timeSlider!.value != 1 {
-            let numberOfSecondsOff = NSTimeInterval(60*60*24*(1-timeSlider!.value)*(1-timeSlider!.value))
+        if timeSlider.value != 1 {
+            let numberOfSecondsOff = NSTimeInterval(60*60*24*(1-timeSlider.value)*(1-timeSlider.value))
             updatedDate = now.dateByAddingTimeInterval(-numberOfSecondsOff)
         }
         let dateFormatter = NSDateFormatter()
         updateTimeLabelWithDate(updatedDate)
         dateFormatter.dateFormat = "ss.SSS"
-        dates += [(proposedDate: updatedDate, dateProposedAt: now, sliderValue: timeSlider!.value)]
-//        println(dates.count)
-//        println("now: \(dateFormatter.stringFromDate(now))")
-//        if updatedDate == nil {
-//            println("pro: now")
-//        }
-//        else {
-//            println("pro: \(dateFormatter.stringFromDate(updatedDate!))")
-//        }
-        
+        dates += [(proposedDate: updatedDate, dateProposedAt: now, sliderValue: timeSlider.value)]
     }
     
     @IBAction func slidingEnded() {
-//        println("sliding ended!")
         let now = NSDate()
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MMM-d HH:mm:ss.SSS"
         let tolerance = 0.1
-        while dates.count>0 {
-            let thisDate: (proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float) = dates.removeLast()
+        while dates.count > 0 {
+            let thisDate = dates.removeLast()
             if now.timeIntervalSinceDate(thisDate.dateProposedAt) > tolerance {
                 dateToBeUsed = thisDate.proposedDate
                 updateTimeLabelWithDate(thisDate.proposedDate)
-                timeSlider!.setValue(thisDate.sliderValue, animated: true)
-//                if thisDate.proposedDate == nil {
-//                    println("submittedDate: (nil)")
-//                }
-//                else {
-//                    println("submitted date: \(dateFormatter.stringFromDate(thisDate.proposedDate!))")
-//                }
+                timeSlider.setValue(thisDate.sliderValue, animated: true)
                 break
             }
         }
@@ -278,36 +257,25 @@ class ViewController: UIViewController {
     
     func updateTimeLabelWithDate(date: NSDate?) {
         if date == nil {
-        	timeLabel!.text = "now"
+        	timeLabel.text = "now"
             self.dateToBeUsed = nil
         }
         else {
             let dateFormatter = NSDateFormatter()
             dateFormatter.dateFormat = "MMM-d HH:mm"
             let timeString = dateFormatter.stringFromDate(date!)
-            timeLabel!.text = "\(timeString)"
+            timeLabel.text = "\(timeString)"
         }
     }
     
     @IBAction func didTapDeleteButton() {
         let alertController = UIAlertController(title: "delete most recent data point", message: "This action cannot be undone.", preferredStyle: .ActionSheet)
         let deleteAction = UIAlertAction(title: "delete", style: UIAlertActionStyle.Destructive, handler: {action in
+			// BETO TODO: this does nothing… intended?
             print("delete")
             let requestString = "http://\(self.hostname)/cgi-bin/database/deleteLast?username=\(self.username)"
             //println(requestString)
             let _ = try? NSString(contentsOfURL: NSURL(string: requestString)!, encoding: NSUTF8StringEncoding)
-            
-//            if !(response != nil) {
-//                print("nil response")
-//            }
-//            else {
-//                if response! != "command recognized" {
-//                    print("failed to delete")
-//                }
-//                else {
-//                    print("delete appears to have succeeded")
-//                }
-//            }
         })
         let cancelAction = UIAlertAction(title: "cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         alertController.addAction(deleteAction)
@@ -316,7 +284,7 @@ class ViewController: UIViewController {
     }
 
     class LabelCell: UITableViewCell {
-        @IBOutlet var label: UILabel?
+        @IBOutlet var label: UILabel!
     }
 }
 
