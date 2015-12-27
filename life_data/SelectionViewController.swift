@@ -10,28 +10,32 @@ import Foundation
 import UIKit
 
 class SelectionViewController: UITableViewController {
-    
-    var request: Request?
+
+	// BETO TODO: can these be non-optional?
+    var request: Request!
     var categoryName: String?
     var dataTypeName: String?
-    @IBOutlet var titleNavigationItem: UINavigationItem?
+    @IBOutlet var titleNavigationItem: UINavigationItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        categoryName = request!.categoryByIndex[request!.categoryIndex]![-1]![-1]!
-        dataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
-        titleNavigationItem!.title = request!.categoryDictionary[categoryName!]![dataTypeName!]!["descriptor"]!
+		// BETO TODO: CTHULUUUUUUUUUU
+        categoryName = request.categoryByIndex[request.categoryIndex]![-1]![-1]!
+        dataTypeName = request.categoryByIndex[request.categoryIndex]![request!.filledOutSoFar]![-1]!
+        titleNavigationItem.title = request!.categoryDictionary[categoryName!]![dataTypeName!]!["descriptor"]!
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("basicCell", forIndexPath: indexPath) 
-        let cellShortName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![indexPath.row]!
-        let cellText = request!.categoryDictionary[categoryName!]![dataTypeName!]![cellShortName]!
+		// BETO TODO: CTHULUUUUUUUUUU
+        let cell = tableView.dequeueReusableCellWithIdentifier("basicCell", forIndexPath: indexPath)
+        let cellShortName = request.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![indexPath.row]!
+        let cellText = request.categoryDictionary[categoryName!]![dataTypeName!]![cellShortName]!
         cell.textLabel!.text = cellText
         return cell
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		// BETO TODO: CTHULUUUUUUUUUU
         let theseKeys = request!.categoryDictionary[categoryName!]![dataTypeName!]!.keys
         return theseKeys.count-2
     }
@@ -41,34 +45,30 @@ class SelectionViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let addedData = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![indexPath.row]!
+        let addedData = request.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![indexPath.row]!
         let newString = "&\(dataTypeName!)=\(addedData)"
         //println(newString)
-        request!.textBits.append(newString)
-        request!.filledOutSoFar++
+        request.textBits.append(newString)
+        request.filledOutSoFar += 1
         
-        if request!.filledOutSoFar == request!.dataTypeNames.count {
+        if request.filledOutSoFar == request.dataTypeNames.count {
             
             var requestURL = ""
-            for item in request!.textBits {
+            for item in request.textBits {
                 requestURL += item
             }
             //println(requestURL)
             let URL = NSURL(string: requestURL)!
             let response = try? String(contentsOfURL: URL, encoding: NSUTF8StringEncoding)
             //println(response!)
-            if response! == "command recognized" {
-                self.navigationController!.popToRootViewControllerAnimated(true)
-            }
-            else {
-                //println("oh crap")
-            }
+			guard response == "command recognized" else {assert(false)}
+			self.navigationController!.popToRootViewControllerAnimated(true)
         }
         else {
-            //println("eff this, another one?")
-            let nextDataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
+			// BETO TODO: CTHULUUUUUUUUUU
+            let nextDataTypeName = request.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
             let type = request!.categoryDictionary[categoryName!]![nextDataTypeName]!["dataType"]!
-            //println(type)
+			// BETO TODO: enum again
             if type == "s" {
                 self.performSegueWithIdentifier("showSelectionViewController", sender: self)
             }
@@ -98,9 +98,8 @@ class SelectionViewController: UITableViewController {
     
     override func viewWillDisappear(animated: Bool) {
         if self.isMovingFromParentViewController() {
-            //println("moving from")
-            request!.filledOutSoFar--
-            request!.textBits.removeLast()
+            request.filledOutSoFar -= 1
+            request.textBits.removeLast()
         }
     }
 }
