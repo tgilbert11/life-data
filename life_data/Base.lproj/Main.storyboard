@@ -5,7 +5,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--add data (1B2a2)-->
+        <!--add data (1B3)-->
         <scene sceneID="WnP-H4-mpU">
             <objects>
                 <viewController id="Ewy-mn-zgf" customClass="ViewController" customModule="life_data" customModuleProvider="target" sceneMemberID="viewController">
@@ -110,7 +110,7 @@
                             <constraint firstItem="Hax-pu-nib" firstAttribute="top" secondItem="ezD-76-1g5" secondAttribute="bottom" id="y94-ky-tce"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="add data (1B2a2)" id="uyM-mJ-bCg">
+                    <navigationItem key="navigationItem" title="add data (1B3)" id="uyM-mJ-bCg">
                         <barButtonItem key="leftBarButtonItem" title="delete last" id="tXp-7p-udh">
                             <connections>
                                 <action selector="didTapDeleteButton" destination="Ewy-mn-zgf" id="Sdv-A8-gzn"/>
