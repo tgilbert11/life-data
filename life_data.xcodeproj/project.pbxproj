@@ -19,7 +19,6 @@
 		B55033311B8004A100F1365C /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033301B8004A100F1365C /* Request.swift */; };
 		B55033331B80267000F1365C /* NumericViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033321B80267000F1365C /* NumericViewController.swift */; };
 		B55033351B80270A00F1365C /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033341B80270A00F1365C /* TextViewController.swift */; };
-		B55033371B8035A200F1365C /* ModifierViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55033361B8035A200F1365C /* ModifierViewController.swift */; };
 		B5A3018D1BAF895B0010449F /* Last10ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A3018C1BAF895B0010449F /* Last10ViewController.swift */; };
 		B5B278DA1B897E6700C90B6C /* ReadDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B278D91B897E6700C90B6C /* ReadDataViewController.swift */; };
 		B5B278DC1B898A1E00C90B6C /* WeightViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B278DB1B898A1E00C90B6C /* WeightViewController.swift */; };
@@ -55,7 +54,6 @@
 		B55033301B8004A100F1365C /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		B55033321B80267000F1365C /* NumericViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumericViewController.swift; sourceTree = "<group>"; };
 		B55033341B80270A00F1365C /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextViewController.swift; path = ../TextViewController.swift; sourceTree = "<group>"; };
-		B55033361B8035A200F1365C /* ModifierViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifierViewController.swift; sourceTree = "<group>"; };
 		B5A3018C1BAF895B0010449F /* Last10ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Last10ViewController.swift; sourceTree = "<group>"; };
 		B5B278D91B897E6700C90B6C /* ReadDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadDataViewController.swift; sourceTree = "<group>"; };
 		B5B278DB1B898A1E00C90B6C /* WeightViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeightViewController.swift; sourceTree = "<group>"; };
@@ -114,7 +112,6 @@
 				B55033321B80267000F1365C /* NumericViewController.swift */,
 				B55033341B80270A00F1365C /* TextViewController.swift */,
 				B55033301B8004A100F1365C /* Request.swift */,
-				B55033361B8035A200F1365C /* ModifierViewController.swift */,
 				B5B278D91B897E6700C90B6C /* ReadDataViewController.swift */,
 				B5B278DB1B898A1E00C90B6C /* WeightViewController.swift */,
 				B5B278DD1B89A68B00C90B6C /* GraphView.swift */,
@@ -268,7 +265,6 @@
 				B5B278DA1B897E6700C90B6C /* ReadDataViewController.swift in Sources */,
 				B52780C71B7FC52500DDCB2E /* AppDelegate.swift in Sources */,
 				B55033351B80270A00F1365C /* TextViewController.swift in Sources */,
-				B55033371B8035A200F1365C /* ModifierViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

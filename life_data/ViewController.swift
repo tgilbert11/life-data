@@ -344,7 +344,13 @@ class ViewController: UIViewController {
         let deleteAction = UIAlertAction(title: "delete", style: UIAlertActionStyle.Destructive, handler: {action in
 
             let requestString = "/cgi-bin/database/deleteLast?username=\(self.username)"
-            MyNetworkHandler.submitRequest(requestString, failed: {() in print("delete failed")}, succeeded: {(response: String) in print("delete succeeded")})
+            let failedClosure = {() in
+                
+            }
+            let succeededClosure = {(result: String) in
+                
+            }
+            MyNetworkHandler.submitRequest(requestString, failed: failedClosure, succeeded: succeededClosure)
 
         })
         let cancelAction = UIAlertAction(title: "cancel", style: UIAlertActionStyle.Cancel, handler: nil)

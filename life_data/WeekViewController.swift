@@ -12,7 +12,6 @@ import UIKit
 class WeekViewController: UIViewController {
 
     var username: String?
-    var hostname: String?
     var data: [String] = []
     @IBOutlet var weekChartView: WeekChartView?
     @IBOutlet var maskView: UIView?
@@ -44,20 +43,23 @@ class WeekViewController: UIViewController {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let fromTime = dateFormatter.stringFromDate(eightDaysAgo)
-        let URLString = "http://taylorg.no-ip.org/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
+        let URLString = "/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
         
-        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: URLString)!), completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
-
-            if data != nil {
-                self.dataRequestCompletedWithData(String(data: data!, encoding: NSUTF8StringEncoding)!)
-                self.stopActivityIndicatorAndClear()
-            }
-            else {
+        
+        let failedClosure = {() in
+            dispatch_async(dispatch_get_main_queue(), { () in
                 self.stopActivityIndicatorWithError()
-            }
-            
-        }).resume()
-        
+            })
+        }
+        let succeededClosure = {(result: String) in
+            dispatch_async(dispatch_get_main_queue(), { () in
+                self.dataRequestCompletedWithData(result)
+                self.stopActivityIndicatorAndClear()
+            })
+        }
+
+        MyNetworkHandler.submitRequest(URLString, failed: failedClosure, succeeded: succeededClosure)
+
     }
     
     func dataRequestCompletedWithData(response: String) {

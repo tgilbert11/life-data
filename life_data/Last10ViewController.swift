@@ -16,7 +16,6 @@ class Last10ViewController: UIViewController {
     @IBOutlet var maskView: UIView?
     
     var username: String?
-    var hostname: String?
     var text: String?
     
     override func viewDidLoad() {
@@ -52,19 +51,19 @@ class Last10ViewController: UIViewController {
         
         clearDynamicData()
         startActivityIndicator()
-    
-        let urlString = "http://taylorg.no-ip.org/cgi-bin/database/readLast10?username=\(username!)"
         
-        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: urlString)!)) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
-            
-            if data != nil {
-                self.requestSucceededWithData(String(data: data!, encoding: NSUTF8StringEncoding)!)
-            }
-            else {
+        let failedClosure = {() in
+            dispatch_async(dispatch_get_main_queue(), { () in
                 self.stopActivityIndicatorWithError()
-            }
-            
-        }.resume()
+            })
+        }
+        let succeededClosure = {(result: String) in
+            dispatch_async(dispatch_get_main_queue(), { () in
+                self.requestSucceededWithData(result)
+            })
+        }
+        
+        MyNetworkHandler.submitRequest("/cgi-bin/database/readLast10?username=\(username!)", failed: failedClosure, succeeded: succeededClosure)
     }
     
     func requestSucceededWithData(data: String) {

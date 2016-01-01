@@ -12,7 +12,6 @@ import UIKit
 class ReadDataViewController: UIViewController {
 
     var username: String?
-    var hostname: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,18 +26,14 @@ class ReadDataViewController: UIViewController {
             let weightViewController = segue.destinationViewController as! WeightViewController
             weightViewController.username = username!
             weightViewController.category = "weight"
-            weightViewController.hostname = hostname
         }
         if segue.identifier! == "showLast10ViewController" {
             let last10ViewController = segue.destinationViewController as! Last10ViewController
             last10ViewController.username = username!
-            last10ViewController.hostname = hostname
         }
         if segue.identifier! == "showWeekViewController" {
             let weekViewController = segue.destinationViewController as! WeekViewController
             weekViewController.username = username!
-            weekViewController.hostname = hostname
-            //print("seguePrepared")
         }
     }
     

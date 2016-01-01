@@ -25,7 +25,6 @@ class WeightViewController: UIViewController {
     
     var username: String?
     var category: String?
-    var hostname: String?
     
     var dataPoints: [(date: NSDate, weight: Double)] = []
     var minDate: NSDate?
@@ -74,21 +73,20 @@ class WeightViewController: UIViewController {
     
         self.startActivityIndicator()
     
-        let requestString = "http://taylorg.no-ip.org/cgi-bin/database/read?username=\(username!)&category=\(category!)"
-        
-        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: requestString)!)) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
-            
-            if data != nil {
-                //print("data != nil")
-                self.requestSucceededWithData(String(data: data!, encoding: NSUTF8StringEncoding)!)
-            }
-            else {
-                //print("data == nil")
+        let failedClosure = {() in
+            dispatch_async(dispatch_get_main_queue(), { () in
                 self.stopActivityIndicatorWithError()
-            }
-            
-        }.resume()
-    }
+            })
+        }
+        let succeededClosure = {(result: String) in
+            dispatch_async(dispatch_get_main_queue(), { () in
+                self.requestSucceededWithData(result)
+            })
+        }
+
+        MyNetworkHandler.submitRequest("/cgi-bin/database/read?username=\(username!)&category=\(category!)", failed: failedClosure, succeeded: succeededClosure)
+        
+        }
     
     func requestSucceededWithData(data: String) {
     

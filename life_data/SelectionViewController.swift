@@ -98,17 +98,14 @@ class SelectionViewController: UIViewController {
     
     /// happens async on main queue
     func startActivityIndicator() {
-        //dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.startAnimating()
             self.maskView!.hidden = false
             self.errorStackView!.hidden = true
             self.navigationItem.setHidesBackButton(true, animated: false)
-        //})
     }
     
     /// happens async on main queue
     func stopActivityIndicatorAndClear() {
-        //dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.stopAnimating()
             self.maskView!.hidden = true
             self.navigationItem.setHidesBackButton(false, animated: false)
@@ -116,15 +113,12 @@ class SelectionViewController: UIViewController {
             if indexPath != nil {
                 self.theTableView!.deselectRowAtIndexPath(indexPath!, animated: true)
             }
-        //})
     }
     
     /// happens async on main queue
     func stopActivityIndicatorWithError() {
-        //dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.stopAnimating()
             self.errorStackView!.hidden = false
-        //})
     }
     
     func removeATextBit() {
@@ -134,9 +128,7 @@ class SelectionViewController: UIViewController {
     
     /// dispatches async main queue request to popToRootViewController
     func returnToRootViewController() {
-        //dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.navigationController!.popToRootViewControllerAnimated(true)
-        //})
     }
     
     // MARK: - Networking stuff
