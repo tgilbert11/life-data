@@ -30,8 +30,7 @@ class ViewController: UIViewController {
     
     var APIString: String?
     var request: Request?
-    var hostname = ""
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "kickOffNewRequest", name: UIApplicationDidBecomeActiveNotification, object: nil)
@@ -141,18 +140,18 @@ class ViewController: UIViewController {
     
         clearDynamicData()
         startActivityIndicator()
-    
-        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: "http://taylorg.no-ip.org/cgi-bin/database/API")!), completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
+        
+        let failedClosure = {() in
+            //print("failed")
+            self.stopActivityIndicatorWithError()
+        }
+        let succeededClosure = {(result: String) in
+            //print("succeeded, \(result)")
+            self.APIRequestSucceededWithAPIString(result)
+            self.stopActivityIndicatorAndClear()
+        }
+        MyNetworkHandler.submitRequest("/cgi-bin/database/API", failed: failedClosure, succeeded: succeededClosure)
 
-            if data != nil {
-                self.APIRequestSucceededWithAPIString(String(data: data!, encoding:NSUTF8StringEncoding)!)
-                self.stopActivityIndicatorAndClear()
-            }
-            else {
-                self.stopActivityIndicatorWithError()
-            }
-            
-        }).resume()
     }
     
     @IBAction func didClickRetry() {
@@ -161,7 +160,6 @@ class ViewController: UIViewController {
     
     func APIRequestSucceededWithAPIString(apiString: String) {
         self.APIString = apiString
-        self.hostname = "taylorg.no-ip.org"
         self.parseData()
         self.stopActivityIndicatorAndClear()
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -203,8 +201,6 @@ class ViewController: UIViewController {
         })
     }
 
-
-
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
         cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]!["descriptor"]!["descriptor"]!
@@ -220,12 +216,7 @@ class ViewController: UIViewController {
         return 1
     }
     
-    
-    
-    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //let cell = tableView.cellForRowAtIndexPath(indexPath)
-        //println(categoryByIndex[indexPath.row]![-1]![-1]!)
         theTableView!.deselectRowAtIndexPath(indexPath, animated: true)
         
         let usernameString = username
@@ -247,7 +238,7 @@ class ViewController: UIViewController {
         request!.categoryIndex = indexPath.row
         request!.categoryDictionary = categoryDictionary
         request!.categoryByIndex = categoryByIndex
-        request!.textBits.append("http://taylorg.no-ip.org/cgi-bin/database/add?username=\(usernameString)&time=%22\(timeString)%22&category=\(categoryString)")
+        request!.textBits.append("/cgi-bin/database/add?username=\(usernameString)&time=%22\(timeString)%22&category=\(categoryString)")
         for (dataType, _/*dataTypeDictionary*/) in categoryDictionary[categoryByIndex[indexPath.row]![-1]![-1]!]! {
             if dataType != "descriptor" {
                 //println("  \(dataType)")
@@ -285,7 +276,6 @@ class ViewController: UIViewController {
         if segue.identifier! == "showReadDataViewController" {
             let readDataViewController = segue.destinationViewController as! ReadDataViewController
             readDataViewController.username = username
-            readDataViewController.hostname = hostname
         }
     }
     
@@ -352,22 +342,10 @@ class ViewController: UIViewController {
     @IBAction func didTapDeleteButton() {
         let alertController = UIAlertController(title: "delete most recent data point", message: "This action cannot be undone.", preferredStyle: .ActionSheet)
         let deleteAction = UIAlertAction(title: "delete", style: UIAlertActionStyle.Destructive, handler: {action in
-            print("delete")
-            let requestString = "http://\(self.hostname)/cgi-bin/database/deleteLast?username=\(self.username)"
-            //println(requestString)
-            let _ = try? NSString(contentsOfURL: NSURL(string: requestString)!, encoding: NSUTF8StringEncoding)
-            
-//            if !(response != nil) {
-//                print("nil response")
-//            }
-//            else {
-//                if response! != "command recognized" {
-//                    print("failed to delete")
-//                }
-//                else {
-//                    print("delete appears to have succeeded")
-//                }
-//            }
+
+            let requestString = "/cgi-bin/database/deleteLast?username=\(self.username)"
+            MyNetworkHandler.submitRequest(requestString, failed: {() in print("delete failed")}, succeeded: {(response: String) in print("delete succeeded")})
+
         })
         let cancelAction = UIAlertAction(title: "cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         alertController.addAction(deleteAction)

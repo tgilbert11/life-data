@@ -25,6 +25,7 @@
 		B5B278DC1B898A1E00C90B6C /* WeightViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B278DB1B898A1E00C90B6C /* WeightViewController.swift */; };
 		B5B278DE1B89A68B00C90B6C /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B278DD1B89A68B00C90B6C /* GraphView.swift */; };
 		B5B86AA71BD4AA1C00B0F9BD /* WeekChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B86AA61BD4AA1C00B0F9BD /* WeekChartView.swift */; };
+		B5F501CE1C35D8610076DBFD /* MyNetworkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F501CD1C35D8610076DBFD /* MyNetworkHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		B5B278DB1B898A1E00C90B6C /* WeightViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeightViewController.swift; sourceTree = "<group>"; };
 		B5B278DD1B89A68B00C90B6C /* GraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		B5B86AA61BD4AA1C00B0F9BD /* WeekChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekChartView.swift; sourceTree = "<group>"; };
+		B5F501CD1C35D8610076DBFD /* MyNetworkHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNetworkHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +121,7 @@
 				B5A3018C1BAF895B0010449F /* Last10ViewController.swift */,
 				B5236B5C1BC3420900FD76F7 /* WeekViewController.swift */,
 				B5B86AA61BD4AA1C00B0F9BD /* WeekChartView.swift */,
+				B5F501CD1C35D8610076DBFD /* MyNetworkHandler.swift */,
 			);
 			path = life_data;
 			sourceTree = "<group>";
@@ -255,6 +258,7 @@
 				B5B278DC1B898A1E00C90B6C /* WeightViewController.swift in Sources */,
 				B52780C91B7FC52500DDCB2E /* ViewController.swift in Sources */,
 				B55033311B8004A100F1365C /* Request.swift in Sources */,
+				B5F501CE1C35D8610076DBFD /* MyNetworkHandler.swift in Sources */,
 				B5B86AA71BD4AA1C00B0F9BD /* WeekChartView.swift in Sources */,
 				B55033331B80267000F1365C /* NumericViewController.swift in Sources */,
 				B550332F1B7FFD1600F1365C /* SelectionViewController.swift in Sources */,

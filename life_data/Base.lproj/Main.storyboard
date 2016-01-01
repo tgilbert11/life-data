@@ -5,7 +5,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--add data (1B2)-->
+        <!--add data (1B2a1)-->
         <scene sceneID="WnP-H4-mpU">
             <objects>
                 <viewController id="Ewy-mn-zgf" customClass="ViewController" customModule="life_data" customModuleProvider="target" sceneMemberID="viewController">
@@ -110,7 +110,7 @@
                             <constraint firstItem="Hax-pu-nib" firstAttribute="top" secondItem="ezD-76-1g5" secondAttribute="bottom" id="y94-ky-tce"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="add data (1B2)" id="uyM-mJ-bCg">
+                    <navigationItem key="navigationItem" title="add data (1B2a1)" id="uyM-mJ-bCg">
                         <barButtonItem key="leftBarButtonItem" title="delete last" id="tXp-7p-udh">
                             <connections>
                                 <action selector="didTapDeleteButton" destination="Ewy-mn-zgf" id="Sdv-A8-gzn"/>
@@ -770,20 +770,70 @@
                                     <segue destination="OV3-cl-kIj" kind="show" identifier="showNumericViewController" id="75j-xv-Acf"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V1K-GM-bo7">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8Ar-WQ-seh">
+                                        <rect key="frame" x="195" y="219.5" width="210.5" height="98.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="could not connect to server" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c4j-RM-UK2">
+                                                <rect key="frame" x="0.0" y="0.0" width="210.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mwU-4A-GgZ">
+                                                <rect key="frame" x="0.0" y="20" width="210.5" height="48"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                <state key="normal" title="retry"/>
+                                                <connections>
+                                                    <action selector="didTapRetryButton" destination="OV3-cl-kIj" eventType="touchUpInside" id="jfk-4a-DGL"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gDi-Xd-tga">
+                                                <rect key="frame" x="0.0" y="68" width="210.5" height="30"/>
+                                                <state key="normal" title="cancel request">
+                                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="didTapCancelButton" destination="OV3-cl-kIj" eventType="touchUpInside" id="seu-sq-v8P"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="x4d-GK-yjh">
+                                        <rect key="frame" x="290" y="258" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="8Ar-WQ-seh" firstAttribute="centerY" secondItem="V1K-GM-bo7" secondAttribute="centerY" id="2Sb-XC-p3L"/>
+                                    <constraint firstItem="8Ar-WQ-seh" firstAttribute="centerX" secondItem="V1K-GM-bo7" secondAttribute="centerX" id="WmZ-eK-eS1"/>
+                                    <constraint firstItem="x4d-GK-yjh" firstAttribute="centerY" secondItem="V1K-GM-bo7" secondAttribute="centerY" id="YsT-2L-l5Z"/>
+                                    <constraint firstItem="x4d-GK-yjh" firstAttribute="centerX" secondItem="V1K-GM-bo7" secondAttribute="centerX" id="h6z-wg-ppn"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="fDH-YB-G0c" firstAttribute="trailing" secondItem="wCT-oG-bWi" secondAttribute="trailingMargin" id="0gI-Ly-mAx"/>
                             <constraint firstItem="ppu-um-oPx" firstAttribute="leading" secondItem="wCT-oG-bWi" secondAttribute="leadingMargin" id="3uN-3a-sdt"/>
                             <constraint firstItem="ppu-um-oPx" firstAttribute="top" secondItem="XdL-RK-e4G" secondAttribute="bottom" constant="8" id="6Dt-0j-6po"/>
+                            <constraint firstItem="8WV-zF-anK" firstAttribute="top" secondItem="V1K-GM-bo7" secondAttribute="bottom" id="PUk-5w-s0R"/>
                             <constraint firstItem="fDH-YB-G0c" firstAttribute="leading" secondItem="ppu-um-oPx" secondAttribute="trailing" constant="8" id="Qce-Ep-C2D"/>
                             <constraint firstItem="EIa-YG-xNy" firstAttribute="leading" secondItem="wCT-oG-bWi" secondAttribute="leadingMargin" id="a1x-IZ-FpC"/>
                             <constraint firstItem="fDH-YB-G0c" firstAttribute="top" secondItem="XdL-RK-e4G" secondAttribute="bottom" constant="8" id="arw-aO-NvO"/>
+                            <constraint firstItem="V1K-GM-bo7" firstAttribute="leading" secondItem="wCT-oG-bWi" secondAttribute="leadingMargin" constant="-20" id="bZM-mu-ZOM"/>
                             <constraint firstItem="EIa-YG-xNy" firstAttribute="top" secondItem="ppu-um-oPx" secondAttribute="bottom" constant="8" id="dT9-k4-Wj4"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="V1K-GM-bo7" secondAttribute="trailing" constant="-20" id="fnz-yg-UTa"/>
+                            <constraint firstItem="V1K-GM-bo7" firstAttribute="top" secondItem="XdL-RK-e4G" secondAttribute="bottom" id="vCu-JE-VAm"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="NaS-Mt-BZx"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="x4d-GK-yjh" id="bY2-4q-AFw"/>
+                        <outlet property="errorStackView" destination="8Ar-WQ-seh" id="fJA-Z2-IXa"/>
+                        <outlet property="maskView" destination="V1K-GM-bo7" id="EZL-Lq-NsS"/>
                         <outlet property="textField" destination="ppu-um-oPx" id="EAt-HV-eaJ"/>
                         <outlet property="titleNavigationItem" destination="NaS-Mt-BZx" id="vhl-Dn-bNE"/>
                         <segue destination="xwu-Ll-wcy" kind="show" identifier="showTextViewController" id="6SJ-Sy-9iC"/>
@@ -833,18 +883,68 @@
                                     <segue destination="xwu-Ll-wcy" kind="show" identifier="showTextViewController" id="pWB-qN-Kj8"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="itd-eu-OZL">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="HsO-uW-Ffx">
+                                        <rect key="frame" x="195" y="219" width="211" height="99"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="could not connect to server" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gql-4u-V6y">
+                                                <rect key="frame" x="0.0" y="0.0" width="211" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cQf-WC-cIg">
+                                                <rect key="frame" x="0.0" y="21" width="211" height="48"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                <state key="normal" title="retry"/>
+                                                <connections>
+                                                    <action selector="didTapRetryButton" destination="xwu-Ll-wcy" eventType="touchUpInside" id="81z-we-4hS"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VOL-Ck-uDh">
+                                                <rect key="frame" x="0.0" y="69" width="211" height="30"/>
+                                                <state key="normal" title="cancel request">
+                                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="didTapCancelButton" destination="xwu-Ll-wcy" eventType="touchUpInside" id="pyI-zx-GkM"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="BzP-Rn-JvQ">
+                                        <rect key="frame" x="290" y="258" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="HsO-uW-Ffx" firstAttribute="centerX" secondItem="itd-eu-OZL" secondAttribute="centerX" id="bDf-nj-Q3d"/>
+                                    <constraint firstItem="BzP-Rn-JvQ" firstAttribute="centerX" secondItem="itd-eu-OZL" secondAttribute="centerX" id="ff3-Ya-9Ut"/>
+                                    <constraint firstItem="HsO-uW-Ffx" firstAttribute="centerY" secondItem="itd-eu-OZL" secondAttribute="centerY" id="o7p-SO-Arv"/>
+                                    <constraint firstItem="BzP-Rn-JvQ" firstAttribute="centerY" secondItem="itd-eu-OZL" secondAttribute="centerY" id="pNb-ao-hsV"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="itd-eu-OZL" firstAttribute="leading" secondItem="iva-gy-GUR" secondAttribute="leadingMargin" constant="-20" id="4Kt-eY-wX1"/>
+                            <constraint firstItem="itd-eu-OZL" firstAttribute="top" secondItem="P4b-vW-Kh9" secondAttribute="bottom" id="7uc-us-fn8"/>
                             <constraint firstItem="WWB-RZ-Opc" firstAttribute="top" secondItem="P4b-vW-Kh9" secondAttribute="bottom" constant="8" id="IE7-wm-RNY"/>
                             <constraint firstItem="bNM-g3-JqY" firstAttribute="top" secondItem="P4b-vW-Kh9" secondAttribute="bottom" constant="8" id="IEz-6B-79E"/>
+                            <constraint firstItem="0CQ-uR-wHu" firstAttribute="top" secondItem="itd-eu-OZL" secondAttribute="bottom" id="PBR-C6-7KF"/>
                             <constraint firstItem="WWB-RZ-Opc" firstAttribute="leading" secondItem="bNM-g3-JqY" secondAttribute="trailing" constant="8" id="WBx-Hk-vbd"/>
                             <constraint firstItem="WWB-RZ-Opc" firstAttribute="trailing" secondItem="iva-gy-GUR" secondAttribute="trailingMargin" id="Yom-Pl-ZlW"/>
                             <constraint firstItem="bNM-g3-JqY" firstAttribute="leading" secondItem="iva-gy-GUR" secondAttribute="leadingMargin" id="ntF-ne-xk1"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="itd-eu-OZL" secondAttribute="trailing" constant="-20" id="uVN-VZ-Bz4"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="Xpf-ZE-X35"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="BzP-Rn-JvQ" id="vQg-TP-HIg"/>
+                        <outlet property="errorStackView" destination="HsO-uW-Ffx" id="JrK-WX-c0V"/>
+                        <outlet property="maskView" destination="itd-eu-OZL" id="c8y-tP-5o0"/>
                         <outlet property="textView" destination="bNM-g3-JqY" id="6wF-36-rya"/>
                         <outlet property="titleNavigationItem" destination="Xpf-ZE-X35" id="taZ-DS-IdJ"/>
                     </connections>
@@ -871,8 +971,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="6SJ-Sy-9iC"/>
+        <segue reference="PGc-kN-Wdy"/>
         <segue reference="9sq-eI-fxO"/>
-        <segue reference="JbN-uY-9dd"/>
-        <segue reference="NbD-7j-fDF"/>
     </inferredMetricsTieBreakers>
 </document>

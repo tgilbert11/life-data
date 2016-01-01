@@ -98,17 +98,17 @@ class SelectionViewController: UIViewController {
     
     /// happens async on main queue
     func startActivityIndicator() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        //dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.startAnimating()
             self.maskView!.hidden = false
             self.errorStackView!.hidden = true
             self.navigationItem.setHidesBackButton(true, animated: false)
-        })
+        //})
     }
     
     /// happens async on main queue
     func stopActivityIndicatorAndClear() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        //dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.stopAnimating()
             self.maskView!.hidden = true
             self.navigationItem.setHidesBackButton(false, animated: false)
@@ -116,15 +116,15 @@ class SelectionViewController: UIViewController {
             if indexPath != nil {
                 self.theTableView!.deselectRowAtIndexPath(indexPath!, animated: true)
             }
-        })
+        //})
     }
     
     /// happens async on main queue
     func stopActivityIndicatorWithError() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        //dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.activityIndicatorView!.stopAnimating()
             self.errorStackView!.hidden = false
-        })
+        //})
     }
     
     func removeATextBit() {
@@ -134,34 +134,36 @@ class SelectionViewController: UIViewController {
     
     /// dispatches async main queue request to popToRootViewController
     func returnToRootViewController() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        //dispatch_async(dispatch_get_main_queue(), { () -> Void in
             self.navigationController!.popToRootViewControllerAnimated(true)
-        })
+        //})
     }
     
     // MARK: - Networking stuff
     
     func kickOffNewRequest() {
-        var requestURL = ""
+    
+        var requestURLString = ""
         for item in request!.textBits {
-            requestURL += item
+            requestURLString += item
         }
         
-        NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: requestURL)!), completionHandler: { (data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
-            
-            if data != nil {
-                if String(data: data!, encoding: NSUTF8StringEncoding) == "command recognized" {
+        let failedClosure = {() in
+            dispatch_async(dispatch_get_main_queue(), { () in
+                self.requestFailed()
+            })
+        }
+        let succeededClosure = {(result: String) in
+            dispatch_async(dispatch_get_main_queue(), { () in
+                if result == "command recognized" {
                     self.requestSucceeded()
                 }
                 else {
                     self.requestFailed()
                 }
-            }
-            else {
-                self.requestFailed()
-            }
-            
-        }).resume()
+            })
+        }
+        MyNetworkHandler.submitRequest(requestURLString, failed: failedClosure, succeeded: succeededClosure)
         
     }
     

@@ -15,4 +15,13 @@ class Request {
     var categoryDictionary = [String: Dictionary<String, Dictionary<String, String>>]()
     var categoryByIndex = [Int: Dictionary<Int, Dictionary<Int, String>>]()
     var categoryIndex = 0
+    
+    func removeATextBit() {
+        filledOutSoFar -= 1
+        textBits.removeLast()
+    }
+    func addATextBit(bit: String) {
+        textBits.append(bit)
+        filledOutSoFar += 1
+    }
 }
