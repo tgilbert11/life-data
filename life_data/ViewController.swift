@@ -34,7 +34,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "kickOffNewRequest", name: UIApplicationDidBecomeActiveNotification, object: nil)
-        // Do any additional setup after loading the view, typically from a nib.
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -45,7 +44,6 @@ class ViewController: UIViewController {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func prepareStaticUI() {
@@ -66,18 +64,14 @@ class ViewController: UIViewController {
         
         if APIString != nil {
             let splitByLines = APIString!.componentsSeparatedByString("\n")
-            //let splitByLines: [String] = []
-            
             
             for line in splitByLines {
                 if line.substringToIndex(line.startIndex.advancedBy(3)) == ">>>" {
-                    //println("category")
                     let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(3))
                     let splitByCommas = removedArrows.componentsSeparatedByString(",")
                     let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                     categoryName = shortName
                     let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                    //println("\(shortName) \(humanName)")
                     categoryDictionary[categoryName] = [String: Dictionary<String,String>]()
                     categoryDictionary[categoryName]!["descriptor"] = [String: String]()
                     categoryDictionary[categoryName]!["descriptor"]!["descriptor"] = humanName
@@ -88,12 +82,8 @@ class ViewController: UIViewController {
                     categoryByIndex[categoryIndex] = [Int: Dictionary<Int, String>]()
                     categoryByIndex[categoryIndex]![-1] = [Int: String]()
                     categoryByIndex[categoryIndex]![-1]![-1] = categoryName
-                    
-                    //let retrievedName = categoryDictionary[categoryName]!["descriptor"]!["descriptor"]!
-                    //println("\(retrievedName)")
                 }
                 else if line.substringToIndex(line.startIndex.advancedBy(2)) == ">>" {
-                    //println("dataType")
                     let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(2))
                     let splitByCommas = removedArrows.componentsSeparatedByString(",")
                     let fullDataType = splitByCommas[0].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
@@ -101,7 +91,6 @@ class ViewController: UIViewController {
                     let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                     dataTypeName = shortName
                     let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                    //println("\(shortName) \(humanName)")
                     categoryDictionary[categoryName]![dataTypeName] = [String: String]()
                     categoryDictionary[categoryName]![dataTypeName]!["descriptor"] = humanName
                     categoryDictionary[categoryName]![dataTypeName]!["dataType"] = shortDataType
@@ -110,26 +99,16 @@ class ViewController: UIViewController {
                     dataItemIndex = -1
                     categoryByIndex[categoryIndex]![dataTypeIndex] = [Int: String]()
                     categoryByIndex[categoryIndex]![dataTypeIndex]![-1] = shortName
-                    
-                    //let retrievedName = categoryDictionary[categoryName]![dataTypeName]!["descriptor"]!
-                    //let retrievedType = categoryDictionary[categoryName]![dataTypeName]!["dataType"]!
-                    //println("    \(retrievedName), \(retrievedType)")
-                    
                 }
                 else if line.substringToIndex(line.startIndex.advancedBy(1)) == ">" {
-                    //println("dataItem")
                     let removedArrows = line.substringFromIndex(line.startIndex.advancedBy(1))
                     let splitByCommas = removedArrows.componentsSeparatedByString(",")
                     let shortName = splitByCommas[1].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                     dataItemName = shortName
                     let humanName = splitByCommas[2].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                    //println("\(shortName) \(humanName)")
                     categoryDictionary[categoryName]![dataTypeName]![dataItemName] = humanName
-                    
                     dataItemIndex++
                     categoryByIndex[categoryIndex]![dataTypeIndex]![dataItemIndex] = shortName
-                    //let retrievedName = categoryDictionary[categoryName]![dataTypeName]![dataItemName]!
-                    //println("        \(retrievedName)")
                 }
             }
         }
@@ -142,13 +121,15 @@ class ViewController: UIViewController {
         startActivityIndicator()
         
         let failedClosure = {() in
-            //print("failed")
-            self.stopActivityIndicatorWithError()
+            dispatch_async(dispatch_get_main_queue(), { () in
+                self.stopActivityIndicatorWithError()
+            })
         }
         let succeededClosure = {(result: String) in
-            //print("succeeded, \(result)")
-            self.APIRequestSucceededWithAPIString(result)
-            self.stopActivityIndicatorAndClear()
+            dispatch_async(dispatch_get_main_queue(), { () in
+                self.APIRequestSucceededWithAPIString(result)
+                self.stopActivityIndicatorAndClear()
+            })
         }
         MyNetworkHandler.submitRequest("/cgi-bin/database/API", failed: failedClosure, succeeded: succeededClosure)
 
@@ -162,49 +143,35 @@ class ViewController: UIViewController {
         self.APIString = apiString
         self.parseData()
         self.stopActivityIndicatorAndClear()
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.theTableView!.reloadData()
-        })
+        self.theTableView!.reloadData()
     }
     
     func startActivityIndicator() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.startAnimating()
-            self.maskView!.hidden = false
-            self.errorStackView!.hidden = true
-        })
-        //print("activity indicator started")
+        self.activityIndicatorView!.startAnimating()
+        self.maskView!.hidden = false
+        self.errorStackView!.hidden = true
     }
     
     func stopActivityIndicatorAndClear() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.stopAnimating()
-            self.maskView!.hidden = true
-        })
-        //print("activity indicator stopped and cleared")
+        self.activityIndicatorView!.stopAnimating()
+        self.maskView!.hidden = true
     }
     
     func stopActivityIndicatorWithError() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.stopAnimating()
-            self.errorStackView!.hidden = false
-        })
-        //print("activity indicator stopped with error")
+        self.activityIndicatorView!.stopAnimating()
+        self.errorStackView!.hidden = false
     }
     
     func clearDynamicData() {
         self.APIString = nil
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.categoryDictionary.removeAll()
-            self.theTableView!.reloadData()
-            self.updateTimeLabelWithDate(nil)
-        })
+        self.categoryDictionary.removeAll()
+        self.theTableView!.reloadData()
+        self.updateTimeLabelWithDate(nil)
     }
-
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
         cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]!["descriptor"]!["descriptor"]!
-        //cell.detailTextLabel = UILabel()
         return cell
     }
     
@@ -230,7 +197,6 @@ class ViewController: UIViewController {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let timeString = dateFormatter.stringFromDate(currentDate!)
-        //println(timeString)
         let categoryString = categoryByIndex[indexPath.row]![-1]![-1]!
         let firstDataTypeName = categoryByIndex[indexPath.row]![0]![-1]!
         
@@ -239,15 +205,12 @@ class ViewController: UIViewController {
         request!.categoryDictionary = categoryDictionary
         request!.categoryByIndex = categoryByIndex
         request!.textBits.append("/cgi-bin/database/add?username=\(usernameString)&time=%22\(timeString)%22&category=\(categoryString)")
-        for (dataType, _/*dataTypeDictionary*/) in categoryDictionary[categoryByIndex[indexPath.row]![-1]![-1]!]! {
+        for (dataType, _) in categoryDictionary[categoryByIndex[indexPath.row]![-1]![-1]!]! {
             if dataType != "descriptor" {
-                //println("  \(dataType)")
                 request!.dataTypeNames.append(dataType)
             }
         }
-        //println(request!.textBits[0])
         let type = categoryDictionary[categoryString]![firstDataTypeName]!["dataType"]!
-        //println(type)
         if type == "s" {
             self.performSegueWithIdentifier("showSelectionViewController", sender: self)
         }
@@ -280,7 +243,6 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didSlideSlider() {
-    
         let now = NSDate()
         var updatedDate: NSDate?
         if timeSlider!.value != 1 {
@@ -291,19 +253,9 @@ class ViewController: UIViewController {
         updateTimeLabelWithDate(updatedDate)
         dateFormatter.dateFormat = "ss.SSS"
         dates += [(proposedDate: updatedDate, dateProposedAt: now, sliderValue: timeSlider!.value)]
-//        println(dates.count)
-//        println("now: \(dateFormatter.stringFromDate(now))")
-//        if updatedDate == nil {
-//            println("pro: now")
-//        }
-//        else {
-//            println("pro: \(dateFormatter.stringFromDate(updatedDate!))")
-//        }
-        
     }
     
     @IBAction func slidingEnded() {
-//        println("sliding ended!")
         let now = NSDate()
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MMM-d HH:mm:ss.SSS"
@@ -314,12 +266,6 @@ class ViewController: UIViewController {
                 dateToBeUsed = thisDate.proposedDate
                 updateTimeLabelWithDate(thisDate.proposedDate)
                 timeSlider!.setValue(thisDate.sliderValue, animated: true)
-//                if thisDate.proposedDate == nil {
-//                    println("submittedDate: (nil)")
-//                }
-//                else {
-//                    println("submitted date: \(dateFormatter.stringFromDate(thisDate.proposedDate!))")
-//                }
                 break
             }
         }

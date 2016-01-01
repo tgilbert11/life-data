@@ -24,7 +24,7 @@ class WeekViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         prepareStaticUI()
-        kickOffNewRequest()
+        makeRequest()
     }
     
     func prepareStaticUI() {
@@ -33,7 +33,7 @@ class WeekViewController: UIViewController {
         self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
     }
     
-    func kickOffNewRequest() {
+    func makeRequest() {
     
         self.clearDynamicData()
         startActivityIndicator()
@@ -44,7 +44,6 @@ class WeekViewController: UIViewController {
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let fromTime = dateFormatter.stringFromDate(eightDaysAgo)
         let URLString = "/cgi-bin/database/readFromTime?username=\(username!)&fromTime=%22\(fromTime)%22"
-        
         
         let failedClosure = {() in
             dispatch_async(dispatch_get_main_queue(), { () in
@@ -57,7 +56,6 @@ class WeekViewController: UIViewController {
                 self.stopActivityIndicatorAndClear()
             })
         }
-
         MyNetworkHandler.submitRequest(URLString, failed: failedClosure, succeeded: succeededClosure)
 
     }
@@ -68,14 +66,9 @@ class WeekViewController: UIViewController {
             if line.characters.count > 0 {
                 self.data += [line]
             }
-            else {
-                //print("skipped one in data read")
-            }
         }
         self.weekChartView!.processedData += self.createProcessedDataFromRaw()
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.weekChartView!.setNeedsDisplay()
-        })
+        self.weekChartView!.setNeedsDisplay()
     }
     
     func clearDynamicData() {
@@ -84,29 +77,23 @@ class WeekViewController: UIViewController {
     }
     
     @IBAction func didTapRetry() {
-        kickOffNewRequest()
+        makeRequest()
     }
-        
+    
     func startActivityIndicator() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.startAnimating()
-            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
-            self.errorStackView!.hidden = true
-        })
+        self.activityIndicatorView!.startAnimating()
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
+        self.errorStackView!.hidden = true
     }
     
     func stopActivityIndicatorAndClear() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.stopAnimating()
-            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
-        })
+        self.activityIndicatorView!.stopAnimating()
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
     }
     
     func stopActivityIndicatorWithError() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.stopAnimating()
-            self.errorStackView!.hidden = false
-        })
+        self.activityIndicatorView!.stopAnimating()
+        self.errorStackView!.hidden = false
     }
     
     func createProcessedDataFromRaw() -> [(date: NSDate, category: String, event: String)] {

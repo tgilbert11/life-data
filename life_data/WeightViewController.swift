@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 class WeightViewController: UIViewController {
-
+    
     @IBOutlet var upperYLabel: UILabel?
     @IBOutlet var centerYLabel: UILabel?
     @IBOutlet var lowerYLabel: UILabel?
@@ -38,7 +38,7 @@ class WeightViewController: UIViewController {
     var minYPixel: CGFloat?
     
     var drawingPoints: [CGPoint] = []
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -59,7 +59,6 @@ class WeightViewController: UIViewController {
     
     func prepareStaticUI() {
         self.activityIndicatorView!.hidesWhenStopped = true
-        //self.errorStackView!.hidden = true
         updatePixelLimits()
         updateLabels()
         redrawGraphView()
@@ -70,9 +69,9 @@ class WeightViewController: UIViewController {
     }
     
     func kickOffNewRequest() {
-    
+        
         self.startActivityIndicator()
-    
+        
         let failedClosure = {() in
             dispatch_async(dispatch_get_main_queue(), { () in
                 self.stopActivityIndicatorWithError()
@@ -83,13 +82,13 @@ class WeightViewController: UIViewController {
                 self.requestSucceededWithData(result)
             })
         }
-
+        
         MyNetworkHandler.submitRequest("/cgi-bin/database/read?username=\(username!)&category=\(category!)", failed: failedClosure, succeeded: succeededClosure)
         
-        }
+    }
     
     func requestSucceededWithData(data: String) {
-    
+        
         let splitByBreak = data.componentsSeparatedByString("<br>")
         var skippedFirstLineYet = false
         for line in splitByBreak {
@@ -111,38 +110,25 @@ class WeightViewController: UIViewController {
         setLimits()
         fillInPoints()
         stopActivityIndicatorAndClear()
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.updateLabels()
-            self.redrawGraphView()
-        })
-        
+        self.updateLabels()
+        self.redrawGraphView()
     }
-        
+    
     func startActivityIndicator() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.startAnimating()
-            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
-            self.errorStackView!.hidden = true
-            //print("started")
-        })
+        self.activityIndicatorView!.startAnimating()
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
+        self.errorStackView!.hidden = true
     }
     
     func stopActivityIndicatorAndClear() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.stopAnimating()
-            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
-            //print("stop and clear")
-        })
+        self.activityIndicatorView!.stopAnimating()
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
     }
     
     func stopActivityIndicatorWithError() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.stopAnimating()
-            self.errorStackView!.hidden = false
-            //print("stop with error")
-        })
+        self.activityIndicatorView!.stopAnimating()
+        self.errorStackView!.hidden = false
     }
-
     
     func setLimits() {
         for (date, weight) in dataPoints {
@@ -194,7 +180,6 @@ class WeightViewController: UIViewController {
         minYPixel = graphView!.frame.height - lowerYLabel!.frame.height/2
         minXPixel = leftXLabel!.frame.width/2
         maxXPixel = graphView!.frame.width - rightXLabel!.frame.width/2
-        //println("minX: \(minXPixel!), maxX: \(maxXPixel!), minY: \(minYPixel!), maxY: \(maxYPixel!)")
     }
     
     func xValueForDate(date: NSDate) -> CGFloat {

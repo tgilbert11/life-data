@@ -83,33 +83,22 @@ class Last10ViewController: UIViewController {
             }
         }
         self.stopActivityIndicatorAndClear()
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.textField!.text = returnString
-        })
+        self.textField!.text = returnString
     }
     
     func startActivityIndicator() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.startAnimating()
-            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
-            self.errorStackView!.hidden = true
-        })
+        self.activityIndicatorView!.startAnimating()
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.25)
+        self.errorStackView!.hidden = true
     }
     
     func stopActivityIndicatorAndClear() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.stopAnimating()
-            self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
-        })
+        self.activityIndicatorView!.stopAnimating()
+        self.maskView!.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.0)
     }
     
     func stopActivityIndicatorWithError() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.activityIndicatorView!.stopAnimating()
-            self.errorStackView!.hidden = false
-        })
+        self.activityIndicatorView!.stopAnimating()
+        self.errorStackView!.hidden = false
     }
-    
-
-    
 }

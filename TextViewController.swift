@@ -11,7 +11,7 @@ import UIKit
 
 class TextViewController: UIViewController {
     
-    var request: Request?
+    var request: Request!
     @IBOutlet var textView: UITextView?
     var categoryName: String?
     var dataTypeName: String?
@@ -32,16 +32,14 @@ class TextViewController: UIViewController {
     
     override func viewWillDisappear(animated: Bool) {
         if self.isMovingFromParentViewController() {
-            //println("moving from")
-            request!.filledOutSoFar--
-            request!.textBits.removeLast()
+            request.removeATextBit()
         }
     }
     
     func prepareStaticUI() {
-        categoryName = request!.categoryByIndex[request!.categoryIndex]![-1]![-1]!
-        dataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
-        titleNavigationItem!.title = request!.categoryDictionary[categoryName!]![dataTypeName!]!["descriptor"]!
+        categoryName = request.categoryByIndex[request.categoryIndex]![-1]![-1]!
+        dataTypeName = request.categoryByIndex[request.categoryIndex]![request.filledOutSoFar]![-1]!
+        titleNavigationItem!.title = request.categoryDictionary[categoryName!]![dataTypeName!]!["descriptor"]!
         textView!.becomeFirstResponder()
         self.maskView.hidden = true
     }
@@ -55,7 +53,7 @@ class TextViewController: UIViewController {
     
     func makeRequest() {
         var requestURLString = ""
-        for item in request!.textBits {
+        for item in request.textBits {
             requestURLString += item
         }
         let failedClosure = {() in
@@ -88,7 +86,6 @@ class TextViewController: UIViewController {
         self.navigationController!.popToRootViewControllerAnimated(true)
     }
     
-    
     @IBAction func didTapCancelButton() {
         self.textView!.becomeFirstResponder()
         self.errorStackView.hidden = true
@@ -103,11 +100,8 @@ class TextViewController: UIViewController {
     }
     
     @IBAction func didTapOKButton() {
-        //println("ok")
-        
         let addedData = textView!.text!
         let newString = "&\(dataTypeName!)=%22\(addedData)%22"
-        //println(newString)
         request!.addATextBit(newString)
         
         if request!.filledOutSoFar == request!.dataTypeNames.count {
@@ -115,10 +109,8 @@ class TextViewController: UIViewController {
             makeRequest()
         }
         else {
-            //println("eff this, another one?")
             let nextDataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
             let type = request!.categoryDictionary[categoryName!]![nextDataTypeName]!["dataType"]!
-            //println(type)
             if  type == "t" {
                 self.performSegueWithIdentifier("showTextViewController", sender: self)
             }
@@ -132,7 +124,5 @@ class TextViewController: UIViewController {
             selectionViewController.request = self.request
         }
         
-    }
-    
-    
+    } 
 }

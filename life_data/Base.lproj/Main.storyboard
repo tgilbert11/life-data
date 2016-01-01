@@ -762,6 +762,9 @@
                                 <rect key="frame" x="20" y="72" width="477" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                                <connections>
+                                    <action selector="numericViewTextChanged" destination="OV3-cl-kIj" eventType="editingChanged" id="Dyv-Mu-16l"/>
+                                </connections>
                             </textField>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EIa-YG-xNy">
                                 <rect key="frame" x="20" y="110" width="110" height="30"/>
@@ -834,6 +837,7 @@
                         <outlet property="activityIndicatorView" destination="x4d-GK-yjh" id="bY2-4q-AFw"/>
                         <outlet property="errorStackView" destination="8Ar-WQ-seh" id="fJA-Z2-IXa"/>
                         <outlet property="maskView" destination="V1K-GM-bo7" id="EZL-Lq-NsS"/>
+                        <outlet property="okButton" destination="fDH-YB-G0c" id="qAi-Ch-rzM"/>
                         <outlet property="textField" destination="ppu-um-oPx" id="EAt-HV-eaJ"/>
                         <outlet property="titleNavigationItem" destination="NaS-Mt-BZx" id="vhl-Dn-bNE"/>
                         <segue destination="xwu-Ll-wcy" kind="show" identifier="showTextViewController" id="6SJ-Sy-9iC"/>
@@ -971,8 +975,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="JbN-uY-9dd"/>
-        <segue reference="9sq-eI-fxO"/>
         <segue reference="NbD-7j-fDF"/>
+        <segue reference="9sq-eI-fxO"/>
+        <segue reference="6SJ-Sy-9iC"/>
     </inferredMetricsTieBreakers>
 </document>

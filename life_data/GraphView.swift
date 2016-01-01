@@ -12,10 +12,7 @@ class GraphView: UIView {
 
     var drawingPoints: [CGPoint]?
     
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
     override func drawRect(rect: CGRect) {
-        //println("here")
         let context = UIGraphicsGetCurrentContext()
         CGContextSetRGBStrokeColor(context, 0.75, 0.75, 0.75, 1)
         CGContextSetLineWidth(context, 1)
@@ -36,7 +33,6 @@ class GraphView: UIView {
             else {
                 CGContextAddLineToPoint(context, point.x, point.y)
             }
-            //println("drawingPoint x: \(point.x), y: \(point.y)")
         }
         CGContextStrokePath(context)
     }

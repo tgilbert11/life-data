@@ -169,9 +169,7 @@ class WeekChartView: UIView {
                 if rectangle.eventType == "sleep" || rectangle.eventType == "snooze" {
                     let dateFormatter = NSDateFormatter()
                     dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
-                    //print("event: \(rectangle.eventType), startTime: \(dateFormatter.stringFromDate(rectangle.startDate)), endTime: \(dateFormatter.stringFromDate(rectangle.endDate)), gradient: \(rectangle.gradient)")
                 }
-                //print("")
             }
         }
         
@@ -234,11 +232,9 @@ class WeekChartView: UIView {
                     if rectangle.eventType == "drive" {
                         let dateFormatter = NSDateFormatter()
                         dateFormatter.dateFormat = "eee, yyyy-MM-dd HH:mm:ss"
-                        //print("event: \(rectangle.eventType), startTime: \(dateFormatter.stringFromDate(rectangle.startDate)), endTime: \(dateFormatter.stringFromDate(rectangle.endDate)), gradient: \(rectangle.gradient)")
                     }
                 }
-                //print("")
-                
+
             }
         }
         
@@ -283,7 +279,6 @@ class WeekChartView: UIView {
     }
     
     override func drawRect(rect: CGRect) {
-        //print("drawRect")
         if processedData.count > 0 && rectangles.count == 0 && lines.count == 0 {
             createGraphicsObjects()
         }
@@ -523,7 +518,6 @@ class WeekChartView: UIView {
     func CGPointForDate(date: NSDate, offset: CGFloat) -> CGPoint {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        //print(dateFormatter.stringFromDate(date))
         dateFormatter.dateFormat = "e"
         let dateString = dateFormatter.stringFromDate(date)
         let dayNumber = Int(dateString)!
@@ -536,8 +530,6 @@ class WeekChartView: UIView {
         dateFormatter.dateFormat = "ss"
         let second = Int(dateFormatter.stringFromDate(date))!
         let y = (1 - (CGFloat(hour*60*60)+CGFloat(minute*60)+CGFloat(second))/24/60/60) * self.bounds.height*8/9+self.bounds.height*0.5/9
-        //print("dow: \(dayNumber), hour: \(hour), minute: \(minute), second: \(second), x: \(x), y: \(y)")
-        
         
         return CGPointMake(x, y)
     }

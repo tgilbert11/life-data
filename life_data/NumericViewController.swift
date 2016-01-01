@@ -12,17 +12,24 @@ import UIKit
 class NumericViewController: UIViewController {
     
     var request: Request?
-    @IBOutlet var textField: UITextField!
     var categoryName: String?
     var dataTypeName: String?
-    @IBOutlet var titleNavigationItem: UINavigationItem?
     
+    @IBOutlet var titleNavigationItem: UINavigationItem!
+    @IBOutlet var textField: UITextField!
     @IBOutlet var maskView: UIView!
     @IBOutlet var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet var errorStackView: UIStackView!
+    @IBOutlet var okButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        assert(textField != nil)
+        assert(maskView != nil)
+        assert(activityIndicatorView != nil)
+        assert(errorStackView != nil)
+        assert(titleNavigationItem != nil)
+        assert(okButton != nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -31,7 +38,6 @@ class NumericViewController: UIViewController {
     
     override func viewWillDisappear(animated: Bool) {
         if self.isMovingFromParentViewController() {
-            //println("moving from")
             request!.removeATextBit()
         }
     }
@@ -42,6 +48,7 @@ class NumericViewController: UIViewController {
         titleNavigationItem!.title = request!.categoryDictionary[categoryName!]![dataTypeName!]!["descriptor"]!
         textField!.becomeFirstResponder()
         self.maskView.hidden = true
+        self.okButton.enabled = false
     }
     
     func requestStarted() {
@@ -87,11 +94,8 @@ class NumericViewController: UIViewController {
     }
     
     @IBAction func didTapOKButton() {
-        //println("ok")
-        
         let addedData = textField!.text!
         let newString = "&\(dataTypeName!)=\(addedData)"
-        //println(newString)
         request!.addATextBit(newString)
         
         if request!.filledOutSoFar == request!.dataTypeNames.count {
@@ -99,10 +103,8 @@ class NumericViewController: UIViewController {
             self.makeRequest()
         }
         else {
-            //println("eff this, another one?")
             let nextDataTypeName = request!.categoryByIndex[request!.categoryIndex]![request!.filledOutSoFar]![-1]!
             let type = request!.categoryDictionary[categoryName!]![nextDataTypeName]!["dataType"]!
-            //println(type)
             if type == "n" {
                 self.performSegueWithIdentifier("showNumericViewController", sender: self)
             }
@@ -123,6 +125,15 @@ class NumericViewController: UIViewController {
     @IBAction func didTapRetryButton() {
         self.requestStarted()
         self.makeRequest()
+    }
+    
+    @IBAction func numericViewTextChanged() {
+        if textField.text!.characters.count > 0 {
+            self.okButton.enabled = true
+        }
+        else {
+            self.okButton.enabled = false
+        }
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
