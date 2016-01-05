@@ -15,17 +15,13 @@ class MyNetworkHandler {
     static let awayHostnameString = "http://taylorg.no-ip.org"
 
     class func submitRequest(requestPath: String, failed: () -> (), succeeded: (result: String) -> ()) {
-    
         NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: "\(lastLocationWasHome ? homeHostnameString : awayHostnameString)\(requestPath)")!), completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
-
-            if data != nil {
-                succeeded(result: String(data: data!, encoding:NSUTF8StringEncoding)!)
+            if data != nil && response != nil && response!.isKindOfClass(NSHTTPURLResponse) && (response! as! NSHTTPURLResponse).statusCode == 200 {
+                succeeded(result: String(data: data!, encoding: NSUTF8StringEncoding)!)
             }
             else {
-            
                 NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration()).dataTaskWithRequest(NSURLRequest(URL: NSURL(string: "\(!lastLocationWasHome ? homeHostnameString : awayHostnameString)\(requestPath)")!), completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) in
-                    
-                    if data != nil {
+                    if data != nil && response != nil && response!.isKindOfClass(NSHTTPURLResponse) && (response! as! NSHTTPURLResponse).statusCode == 200 {
                         lastLocationWasHome = !lastLocationWasHome
                         succeeded(result: String(data: data!, encoding:NSUTF8StringEncoding)!)
                     }

@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     @IBOutlet var maskView: UIView?
     @IBOutlet var errorStackView: UIStackView?
     
-    let username = "dev"
+    let username = "morganm"
     
     var dateToBeUsed: NSDate?
     var dates: [(proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float)] = []
@@ -116,7 +116,7 @@ class ViewController: UIViewController {
 
     
     func kickOffNewRequest() {
-    
+        print("kickOffNewRequest")
         clearDynamicData()
         startActivityIndicator()
         
