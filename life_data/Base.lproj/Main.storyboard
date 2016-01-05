@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="bWH-Vn-smX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="bWH-Vn-smX">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--add data (2A1)-->
+        <!--add data-->
         <scene sceneID="WnP-H4-mpU">
             <objects>
                 <viewController id="Ewy-mn-zgf" customClass="ViewController" customModule="life_data" customModuleProvider="target" sceneMemberID="viewController">
@@ -110,7 +110,7 @@
                             <constraint firstItem="Hax-pu-nib" firstAttribute="top" secondItem="ezD-76-1g5" secondAttribute="bottom" id="y94-ky-tce"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="add data (2A1)" id="uyM-mJ-bCg">
+                    <navigationItem key="navigationItem" title="add data" id="uyM-mJ-bCg">
                         <barButtonItem key="leftBarButtonItem" title="delete last" id="tXp-7p-udh">
                             <connections>
                                 <action selector="didTapDeleteButton" destination="Ewy-mn-zgf" id="Sdv-A8-gzn"/>
@@ -694,7 +694,7 @@
                                         <rect key="frame" x="290" y="258" width="20" height="20"/>
                                     </activityIndicatorView>
                                 </subviews>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="Nzv-hJ-JF3" firstAttribute="centerX" secondItem="T5B-fk-CMM" secondAttribute="centerX" id="RH6-15-FkJ"/>
                                     <constraint firstItem="tYb-F4-xZB" firstAttribute="centerY" secondItem="T5B-fk-CMM" secondAttribute="centerY" id="TXP-ya-nnB"/>
@@ -808,7 +808,7 @@
                                         <rect key="frame" x="290" y="258" width="20" height="20"/>
                                     </activityIndicatorView>
                                 </subviews>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="8Ar-WQ-seh" firstAttribute="centerY" secondItem="V1K-GM-bo7" secondAttribute="centerY" id="2Sb-XC-p3L"/>
                                     <constraint firstItem="8Ar-WQ-seh" firstAttribute="centerX" secondItem="V1K-GM-bo7" secondAttribute="centerX" id="WmZ-eK-eS1"/>
@@ -922,7 +922,7 @@
                                         <rect key="frame" x="290" y="258" width="20" height="20"/>
                                     </activityIndicatorView>
                                 </subviews>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="HsO-uW-Ffx" firstAttribute="centerX" secondItem="itd-eu-OZL" secondAttribute="centerX" id="bDf-nj-Q3d"/>
                                     <constraint firstItem="BzP-Rn-JvQ" firstAttribute="centerX" secondItem="itd-eu-OZL" secondAttribute="centerX" id="ff3-Ya-9Ut"/>
