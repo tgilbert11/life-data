@@ -116,7 +116,7 @@ class ViewController: UIViewController {
 
     
     func kickOffNewRequest() {
-        print("kickOffNewRequest")
+        
         clearDynamicData()
         startActivityIndicator()
         
