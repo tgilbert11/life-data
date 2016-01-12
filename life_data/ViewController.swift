@@ -8,8 +8,30 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+public func ==(lhs: KeyThing, rhs: KeyThing) -> Bool {
+return false
+}
+public enum KeyThing: Hashable {
+    case Descriptor
+    case Other(String)
+    public var hashValue: Int { get {
+        switch (self) {
+        case .Descriptor:
+            return 0
+        case .Other(let x):
+            return x.hashValue
+        }
+     }
+    }
+}
 
+var key = KeyThing.Descriptor
+var otherKey = KeyThing.Other("hi")
+
+
+
+class ViewController: UIViewController {
+    
     @IBOutlet var theTableView: UITableView?
     @IBOutlet var timeSlider: UISlider?
     @IBOutlet var timeLabel: UILabel?
@@ -17,13 +39,16 @@ class ViewController: UIViewController {
     @IBOutlet var maskView: UIView?
     @IBOutlet var errorStackView: UIStackView?
     
-    let username = "dev"
+    let username = "andreslp"
     
     var dateToBeUsed: NSDate?
     var dates: [(proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float)] = []
 
 	// BETO TODO: WTF is this, need typealiases
     // String (categoryName) -> String (dataTypeName) -> String (dataItemName) -> String (data item name)
+//    typealias Categories {
+//    
+//    }
     var categoryDictionary = [String: Dictionary<String, Dictionary<String, String>>]()
     
     // Int -> categories (-1 is categoryName, numbers = dataTypes) -> dataTypes (-1 is dataTypeName, numbers = dataItems) -> dataItems (number is dataItemName)
@@ -35,6 +60,19 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "kickOffNewRequest", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        switch (key) {
+        case .Descriptor:
+            print("Hi im a descriptor")
+        case .Other(let x):
+            print("Hi im \(x)")
+            
+        }
+        let y = "HI"
+        typealias categoryToDataName = [KeyThing: String]
+        var thing = categoryToDataName()
+        thing[.Other(y)] = "whatever"
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -173,7 +211,7 @@ class ViewController: UIViewController {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = theTableView.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
 		// BETO TODO: this might be the grossest line of code I've ever seen :) 7 '!' used 7 times
-        cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]!["descriptor"]!["descriptor"]!
+        cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]![.Descriptor]!["descriptor"]!
         return cell
     }
     
