@@ -21,7 +21,8 @@ class ViewController: UIViewController {
     
     var dateToBeUsed: NSDate?
     var dates: [(proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float)] = []
-    
+
+	// BETO TODO: WTF is this, need typealiases
     // String (categoryName) -> String (dataTypeName) -> String (dataItemName) -> String (data item name)
     var categoryDictionary = [String: Dictionary<String, Dictionary<String, String>>]()
     
@@ -170,7 +171,8 @@ class ViewController: UIViewController {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = theTableView!.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
+        let cell = theTableView.dequeueReusableCellWithIdentifier("BasicCell")! as UITableViewCell
+		// BETO TODO: this might be the grossest line of code I've ever seen :) 7 '!' used 7 times
         cell.textLabel!.text = categoryDictionary[ categoryByIndex[indexPath.row]![-1]![-1]!]!["descriptor"]!["descriptor"]!
         return cell
     }
@@ -187,7 +189,7 @@ class ViewController: UIViewController {
         theTableView!.deselectRowAtIndexPath(indexPath, animated: true)
         
         let usernameString = username
-        var currentDate: NSDate?
+        let currentDate: NSDate
         if dateToBeUsed == nil {
             currentDate = NSDate()
         }
@@ -245,8 +247,8 @@ class ViewController: UIViewController {
     @IBAction func didSlideSlider() {
         let now = NSDate()
         var updatedDate: NSDate?
-        if timeSlider!.value != 1 {
-            let numberOfSecondsOff = NSTimeInterval(60*60*24*(1-timeSlider!.value)*(1-timeSlider!.value))
+        if timeSlider.value != 1 {
+            let numberOfSecondsOff = NSTimeInterval(60*60*24*(1-timeSlider.value)*(1-timeSlider.value))
             updatedDate = now.dateByAddingTimeInterval(-numberOfSecondsOff)
         }
         let dateFormatter = NSDateFormatter()
@@ -260,8 +262,8 @@ class ViewController: UIViewController {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MMM-d HH:mm:ss.SSS"
         let tolerance = 0.1
-        while dates.count>0 {
-            let thisDate: (proposedDate: NSDate?, dateProposedAt: NSDate, sliderValue: Float) = dates.removeLast()
+        while dates.count > 0 {
+            let thisDate = dates.removeLast()
             if now.timeIntervalSinceDate(thisDate.dateProposedAt) > tolerance {
                 dateToBeUsed = thisDate.proposedDate
                 updateTimeLabelWithDate(thisDate.proposedDate)
@@ -274,14 +276,14 @@ class ViewController: UIViewController {
     
     func updateTimeLabelWithDate(date: NSDate?) {
         if date == nil {
-        	timeLabel!.text = "now"
+        	timeLabel.text = "now"
             self.dateToBeUsed = nil
         }
         else {
             let dateFormatter = NSDateFormatter()
             dateFormatter.dateFormat = "MMM-d HH:mm"
             let timeString = dateFormatter.stringFromDate(date!)
-            timeLabel!.text = "\(timeString)"
+            timeLabel.text = "\(timeString)"
         }
     }
     
@@ -306,7 +308,7 @@ class ViewController: UIViewController {
     }
 
     class LabelCell: UITableViewCell {
-        @IBOutlet var label: UILabel?
+        @IBOutlet var label: UILabel!
     }
 }
 
