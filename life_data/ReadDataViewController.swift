@@ -37,4 +37,15 @@ class ReadDataViewController: UIViewController {
         }
     }
     
+    @IBAction func didTapNocificationButton(sender: AnyObject) {
+        print("didTapNotificationButton")
+        var notification = UILocalNotification()
+        notification.alertTitle = "testTitle"
+        notification.alertBody = "testBody"
+        notification.alertAction = "testAction"
+        notification.fireDate = { var date = NSDate(); date = date.dateByAddingTimeInterval(5); return date }()
+        notification.soundName = UILocalNotificationDefaultSoundName
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        //UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+    }
 }

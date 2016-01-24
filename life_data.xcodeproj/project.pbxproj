@@ -39,7 +39,7 @@
 
 /* Begin PBXFileReference section */
 		B5236B5C1BC3420900FD76F7 /* WeekViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekViewController.swift; sourceTree = "<group>"; };
-		B52780C11B7FC52500DDCB2E /* life_data.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = life_data.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B52780C11B7FC52500DDCB2E /* life_data_dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = life_data_dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B52780C51B7FC52500DDCB2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B52780C61B7FC52500DDCB2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B52780C81B7FC52500DDCB2E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 		B52780C21B7FC52500DDCB2E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B52780C11B7FC52500DDCB2E /* life_data.app */,
+				B52780C11B7FC52500DDCB2E /* life_data_dev.app */,
 				B52780D61B7FC52500DDCB2E /* life_dataTests.xctest */,
 			);
 			name = Products;
@@ -151,9 +151,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B52780C01B7FC52500DDCB2E /* life_data */ = {
+		B52780C01B7FC52500DDCB2E /* life_data_dev */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B52780E01B7FC52600DDCB2E /* Build configuration list for PBXNativeTarget "life_data" */;
+			buildConfigurationList = B52780E01B7FC52600DDCB2E /* Build configuration list for PBXNativeTarget "life_data_dev" */;
 			buildPhases = (
 				B52780BD1B7FC52500DDCB2E /* Sources */,
 				B52780BE1B7FC52500DDCB2E /* Frameworks */,
@@ -163,9 +163,9 @@
 			);
 			dependencies = (
 			);
-			name = life_data;
+			name = life_data_dev;
 			productName = life_data;
-			productReference = B52780C11B7FC52500DDCB2E /* life_data.app */;
+			productReference = B52780C11B7FC52500DDCB2E /* life_data_dev.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B52780D51B7FC52500DDCB2E /* life_dataTests */ = {
@@ -221,7 +221,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B52780C01B7FC52500DDCB2E /* life_data */,
+				B52780C01B7FC52500DDCB2E /* life_data_dev */,
 				B52780D51B7FC52500DDCB2E /* life_dataTests */,
 			);
 		};
@@ -282,7 +282,7 @@
 /* Begin PBXTargetDependency section */
 		B52780D81B7FC52500DDCB2E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B52780C01B7FC52500DDCB2E /* life_data */;
+			target = B52780C01B7FC52500DDCB2E /* life_data_dev */;
 			targetProxy = B52780D71B7FC52500DDCB2E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -473,7 +473,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B52780E01B7FC52600DDCB2E /* Build configuration list for PBXNativeTarget "life_data" */ = {
+		B52780E01B7FC52600DDCB2E /* Build configuration list for PBXNativeTarget "life_data_dev" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B52780E11B7FC52600DDCB2E /* Debug */,

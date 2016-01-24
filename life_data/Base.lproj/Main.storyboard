@@ -181,6 +181,13 @@
                                     <segue destination="Q5R-gK-8p6" kind="show" identifier="showLast10ViewController" id="9vL-08-r5t"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5kY-fQ-oKp">
+                                <rect key="frame" x="150" y="223" width="84" height="30"/>
+                                <state key="normal" title="Notification!"/>
+                                <connections>
+                                    <action selector="didTapNocificationButton:" destination="x2E-VX-9Wg" eventType="touchUpInside" id="XfN-zY-j5s"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>

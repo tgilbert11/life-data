@@ -10,12 +10,12 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet var theTableView: UITableView?
-    @IBOutlet var timeSlider: UISlider?
-    @IBOutlet var timeLabel: UILabel?
-    @IBOutlet var activityIndicatorView: UIActivityIndicatorView?
-    @IBOutlet var maskView: UIView?
-    @IBOutlet var errorStackView: UIStackView?
+    @IBOutlet weak var theTableView: UITableView!
+    @IBOutlet weak var timeSlider: UISlider!
+    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+    @IBOutlet weak var maskView: UIView!
+    @IBOutlet weak var errorStackView: UIStackView!
     
     let username = "dev"
     
@@ -35,6 +35,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "kickOffNewRequest", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -198,7 +199,7 @@ class ViewController: UIViewController {
         }
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
-        let timeString = dateFormatter.stringFromDate(currentDate!)
+        let timeString = dateFormatter.stringFromDate(currentDate)
         let categoryString = categoryByIndex[indexPath.row]![-1]![-1]!
         let firstDataTypeName = categoryByIndex[indexPath.row]![0]![-1]!
         

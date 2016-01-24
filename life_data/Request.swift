@@ -24,4 +24,5 @@ class Request {
         textBits.append(bit)
         filledOutSoFar += 1
     }
+    
 }
